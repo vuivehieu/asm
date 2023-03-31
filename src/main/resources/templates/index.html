@@ -1,0 +1,180 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link href="https://fonts.googleapis.com/css?family=Material+Icons" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" />
+    <link rel="stylesheet" href="/admin-template/css/vendors.bundle.min.css" />
+    <link rel="stylesheet" href="/admin-template/vendors/datatables.net-bs4/css/dataTables.bootstrap4.min.css" />
+    <link rel="stylesheet" href="/admin-template/css/main.bundle.min.css" />
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js" defer="defer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <title>ASM</title>
+</head>
+<body>
+<!-- Navigation -->
+<div class="app-admin-wrap-layout-1 sidebar-full sidebar-theme-slate">
+    <div th:replace="~{/fragments/header.html}"></div>
+    <div class="main-content-wrap">
+        <!-- Start::Main header  -->
+        <header class="main-header bg-card d-flex flex-row justify-content-between align-items-center px-lg">
+            <!-- Start::Header menu-->
+            <!-- End::Header menu-->
+        </header>
+        <div class="main-content-body">
+            <!-- Start:: content (Your custom content)  -->
+            <div class="subheader px-lg" style="padding: 0">
+                <div class="subheader-container">
+                    <div class="subheader-main">
+                        <nav aria-label="breadcrumb" class="ul-breadcrumb">
+                            <ol class="ul-breadcrumb-items">
+                                <li class="breadcrumb-home"><a href="#"> <i class="material-icons"
+                                >home</i></a></li>
+                                <li class="breadcrumb-item"><a href="#">ASM</a></li>
+                                <li class="breadcrumb-item active"><a href="#">Domain Management</a></li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="row align-items-center">
+                            <div class="col-sm-12 col-md-6">
+                                <div class="input-group" style="position: relative;width: 25%;margin-left: auto;margin-bottom: 15px;float: left">
+<!--                                    <select class="form-control js-basic-example2" id="filterType" style="margin-left:-2%;background: #cfcfcf;border-radius: 20px;padding: 10px 20px;" onchange="filter()">-->
+<!--                                        <option value="application" ${filter == 'application' ? 'selected' : ''}><spring:message code="file.media"/></option>-->
+<!--                                        <option value="image" ${filter == 'image' ? 'selected' : ''}><spring:message code="file.file"/></option>-->
+<!--                                    </select>-->
+                                    <div class="input-group-append" style="position: absolute;right: 0;z-index: 10;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <div class="input-group" style="position: relative;width: 75%;margin-left: auto;margin-bottom: 15px;">
+                                    <input class="form-control" id="textSearch" value="" type="text" placeholder="Search for domain" style="margin-left:-2%;background: #cfcfcf;border-radius: 20px;padding: 10px 20px;">
+                                    <div class="input-group-append" style="position: absolute;right: 0;z-index: 10;">
+                                        <button class="btn btn-secondary"  type="button" onclick="search()">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-header" style="background: #242939 ;display: flex;justify-content: space-between;">
+                            <h2 class="p-1 m-0 text-16 font-weight-semi " style="color: white">Domain Management</h2>
+                            <div style="color: white" class="p-1 m-0 text-16">
+                                <i class="fa fa-plus" aria-hidden="true" data-toggle="modal" data-target="#ModalAdd" style="cursor: pointer"></i>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body table-responsive">
+                                <table id="example" style="text-align: center" class="table">
+                                    <tbody>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>ID</th>
+                                        <th>Domain Name</th>
+                                        <th>Created Date</th>
+                                        <th></th>
+                                    </tr>
+                                    <th:block th:each="item,itemIndex : ${domains.content}">
+                                        <tr class="to-pointer">
+<!--                                        <tr class="showDetail to-pointer" th:data-createddate="${item.createdDate.toString().substring(0,10)}" th:data-username="${item.username}" th:data-campusname="${item.campusName}" th:data-userid="${item.idNumber}" th:data-email="${item.email}" th:data-fullname="${item.fullName}" th:data-firstname="${item.firstName}" th:data-lastname="${item.lastName}" th:data-age="${item.age}" th:data-phone="${item.phone}" th:data-birthdate="${item.birthDate}" th:data-role="${item.fullRole}">-->
+<!--                                            <th:block th:if="${curPage>1}">-->
+<!--                                                <td th:text="${itemIndex.index +1 + item.pageable.getPageSize()*(curPage-1)}"></td>-->
+<!--                                            </th:block>-->
+<!--                                            <th:block th:if="${curPage==1}">-->
+<!--                                                <td th:text="${itemIndex.index +1}"></td>-->
+<!--                                            </th:block>-->
+                                            <td th:text="${itemIndex.index}"></td>
+                                            <td th:text="${item.id}"></td>
+                                            <td th:text="${item.domainName}"></td>
+                                            <td th:text="${item.createdDate}"></td>
+<!--                                            <td th:text="${item.fullName}"></td>-->
+<!--                                            <td th:text="${item.username}"></td>-->
+<!--                                            <td th:text="${item.roleName}"></td>-->
+<!--                                            <td th:text="${item.createdDate.toString().substring(0,10)}"></td>-->
+<!--                                            <td th:switch="${item.isActive}">-->
+<!--                                                <span class="badge  badge-success" th:case='true' th:text="#{user.active}"></span>-->
+<!--                                                <span class="badge  badge-light" th:case='false' th:text="#{user.inactive}"></span>-->
+<!--                                            </td>-->
+                                            <td>
+                                                <button class="btn text-primary rounded-circle m-0 btn-sm btn-icon" style="height: 0px !important;" th:onclick="|handleEdit(event, ${item.id})|" ><i class="material-icons" >edit</i><div class="ripple-container"></div></button>
+                                                <button class="btn text-danger rounded-circle m-0 btn-sm btn-icon" style="height: 0px !important;" th:onclick="|handleDelete(event, ${item.id})|" ><i class="material-icons">delete</i></button>
+
+                                            </td>
+                                        </tr>
+                                    </th:block>
+                                    </tbody>
+                                </table>
+                                <ul class="pagination justify-content-center font-weight-bold" th:if="${domains.totalPages > 0}">
+                                    <li class="page-item">
+                                        <button class="page-link" th:onclick="|handlePage(1)|"><i class="material-icons ">keyboard_double_arrow_left</i>
+                                        </button>
+                                    </li>
+                                    <li class="page-item">
+                                        <button class="page-link" th:onclick="|handlePage(${domains.number < 1 ? 1 : domains.number})|"><i class="material-icons ">keyboard_arrow_left</i>
+                                        </button>
+                                    </li>
+                                    <li aria-current="page" class="page-item"
+                                        th:if="${domains.totalPages >5 && domains.number >2 && domains.number < domains.totalPages -1}"
+                                        th:classappend="${i eq domains.number + 1} ? 'active'"
+                                        th:each="i : ${#numbers.sequence( (domains.number -1 < 1 ? 1 :  domains.number -1 ) ,( domains.number +3> domains.totalPages ?  domains.totalPages : domains.number +3), 1)}">
+                                        <button class="page-link page-number" th:onclick="|handlePage(${i})|"
+                                                th:text="${i}"></button>
+                                    </li>
+                                    <li aria-current="page" class="page-item"
+                                        th:if="${domains.totalPages >5 && domains.number >2 && domains.number == domains.totalPages -1}"
+                                        th:classappend="${i eq domains.number + 1} ? 'active'"
+                                        th:each="i : ${#numbers.sequence( (domains.totalPages -4) ,(domains.totalPages) , 1)}">
+                                        <button class="page-link page-number" th:onclick="|handlePage(${i})|"
+                                                th:text="${i}"></button>
+                                    </li>
+                                    <li aria-current="page" class="page-item"
+                                        th:if="${domains.totalPages >5 && domains.number <= 2 }"
+                                        th:classappend="${i eq domains.number + 1} ? 'active'"
+                                        th:each="i : ${#numbers.sequence( 1 ,5, 1)}">
+                                        <button class="page-link page-number" th:onclick="|handlePage(${i})|"
+                                                th:text="${i}"></button>
+                                    </li>
+                                    <li aria-current="page" class="page-item"
+                                        th:if="${domains.totalPages <= 5}"
+                                        th:classappend="${i eq domains.number + 1} ? 'active'"
+                                        th:each="i : ${#numbers.sequence(1, domains.totalPages , 1)}">
+                                        <button class="page-link page-number" th:onclick="|handlePage(${i})|"
+                                                th:text="${i}"></button>
+                                    </li>
+                                    <li class="page-item">
+                                        <button class="page-link" th:onclick="|handlePage(${domains.number +2 > domains.totalPages ? domains.totalPages :domains.number +2 })|"><i class="material-icons">keyboard_arrow_right</i>
+                                        </button>
+                                    </li>
+                                    <li class="page-item">
+                                        <button class="page-link" th:onclick="|handlePage(${domains.totalPages})|"><i class="material-icons">keyboard_double_arrow_right</i>
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<!---->
+            <!-- End:: Footer-->
+        </div>
+        <!-- End::Main header-->
+    </div>
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+<script th:src="@{assets/datatable/datatables.js}"></script>
+</div>
+</body>
+</html>
