@@ -37,7 +37,7 @@
                                 <li class="breadcrumb-home"><a href="#"> <i class="material-icons"
                                 >home</i></a></li>
                                 <li class="breadcrumb-item"><a href="#">ASM</a></li>
-                                <li class="breadcrumb-item active"><a href="#">Domain Management</a></li>
+                                <li class="breadcrumb-item active"><a href="#">Result Nuclei Management</a></li>
                             </ol>
                         </nav>
                     </div>
@@ -59,7 +59,7 @@
                             </div>
                             <div class="col-sm-12 col-md-6">
                                 <div class="input-group" style="position: relative;width: 75%;margin-left: auto;margin-bottom: 15px;">
-                                    <input class="form-control" id="textSearch" value="" type="text" placeholder="Search for domain" style="margin-left:-2%;background: #cfcfcf;border-radius: 20px;padding: 10px 20px;">
+                                    <input class="form-control" id="textSearch" value="" type="text" placeholder="Search for result" style="margin-left:-2%;background: #cfcfcf;border-radius: 20px;padding: 10px 20px;">
                                     <div class="input-group-append" style="position: absolute;right: 0;z-index: 10;">
                                         <button class="btn btn-secondary"  type="button" onclick="search()">
                                             <i class="fa fa-search"></i>
@@ -69,7 +69,7 @@
                             </div>
                         </div>
                         <div class="card-header" style="background: #242939 ;display: flex;justify-content: space-between;">
-                            <h2 class="p-1 m-0 text-16 font-weight-semi " style="color: white">Domain Management</h2>
+                            <h2 class="p-1 m-0 text-16 font-weight-semi " style="color: white">Result Nuclei Management</h2>
                             <div style="color: white" class="p-1 m-0 text-16">
 <!--                                <i class="fa fa-plus" aria-hidden="true" data-toggle="modal" data-target="#ModalAdd" style="cursor: pointer"></i>-->
                             </div>
@@ -81,11 +81,12 @@
                                     <tr>
                                         <th>No</th>
                                         <th>ID</th>
-                                        <th>Domain Name</th>
-                                        <th>Created Date</th>
+                                        <th>Vulnerability</th>
+                                        <th>Protocol</th>
+                                        <th>Subdomain Ip</th>
 <!--                                        <th></th>-->
                                     </tr>
-                                    <th:block th:each="item,itemIndex : ${domains.content}">
+                                    <th:block th:each="item,itemIndex : ${result.content}">
                                         <tr class="to-pointer">
 <!--                                        <tr class="showDetail to-pointer" th:data-createddate="${item.createdDate.toString().substring(0,10)}" th:data-username="${item.username}" th:data-campusname="${item.campusName}" th:data-userid="${item.idNumber}" th:data-email="${item.email}" th:data-fullname="${item.fullName}" th:data-firstname="${item.firstName}" th:data-lastname="${item.lastName}" th:data-age="${item.age}" th:data-phone="${item.phone}" th:data-birthdate="${item.birthDate}" th:data-role="${item.fullRole}">-->
 <!--                                            <th:block th:if="${curPage>1}">-->
@@ -96,8 +97,9 @@
 <!--                                            </th:block>-->
                                             <td th:text="${itemIndex.index}"></td>
                                             <td th:text="${item.id}"></td>
-                                            <td th:text="${item.domainName}"></td>
-                                            <td th:text="${item.createdDate}"></td>
+                                            <td th:text="${item.vulnerabilityName}"></td>
+                                            <td th:text="${item.protocol}"></td>
+                                            <td th:text="${item.subdomainIp.ip}"></td>
 <!--                                            <td th:text="${item.fullName}"></td>-->
 <!--                                            <td th:text="${item.username}"></td>-->
 <!--                                            <td th:text="${item.roleName}"></td>-->
@@ -115,49 +117,49 @@
                                     </th:block>
                                     </tbody>
                                 </table>
-                                <ul class="pagination justify-content-center font-weight-bold" th:if="${domains.totalPages > 0}">
+                                <ul class="pagination justify-content-center font-weight-bold" th:if="${result.totalPages > 0}">
                                     <li class="page-item">
                                         <button class="page-link" th:onclick="|handlePage(1)|"><i class="material-icons ">keyboard_double_arrow_left</i>
                                         </button>
                                     </li>
                                     <li class="page-item">
-                                        <button class="page-link" th:onclick="|handlePage(${domains.number < 1 ? 1 : domains.number})|"><i class="material-icons ">keyboard_arrow_left</i>
+                                        <button class="page-link" th:onclick="|handlePage(${result.number < 1 ? 1 : result.number})|"><i class="material-icons ">keyboard_arrow_left</i>
                                         </button>
                                     </li>
                                     <li aria-current="page" class="page-item"
-                                        th:if="${domains.totalPages >5 && domains.number >2 && domains.number < domains.totalPages -1}"
-                                        th:classappend="${i eq domains.number + 1} ? 'active'"
-                                        th:each="i : ${#numbers.sequence( (domains.number -1 < 1 ? 1 :  domains.number -1 ) ,( domains.number +3> domains.totalPages ?  domains.totalPages : domains.number +3), 1)}">
+                                        th:if="${result.totalPages >5 && result.number >2 && result.number < result.totalPages -1}"
+                                        th:classappend="${i eq result.number + 1} ? 'active'"
+                                        th:each="i : ${#numbers.sequence( (result.number -1 < 1 ? 1 :  result.number -1 ) ,( result.number +3> result.totalPages ?  result.totalPages : result.number +3), 1)}">
                                         <button class="page-link page-number" th:onclick="|handlePage(${i})|"
                                                 th:text="${i}"></button>
                                     </li>
                                     <li aria-current="page" class="page-item"
-                                        th:if="${domains.totalPages >5 && domains.number >2 && domains.number == domains.totalPages -1}"
-                                        th:classappend="${i eq domains.number + 1} ? 'active'"
-                                        th:each="i : ${#numbers.sequence( (domains.totalPages -4) ,(domains.totalPages) , 1)}">
+                                        th:if="${result.totalPages >5 && result.number >2 && result.number == result.totalPages -1}"
+                                        th:classappend="${i eq result.number + 1} ? 'active'"
+                                        th:each="i : ${#numbers.sequence( (result.totalPages -4) ,(result.totalPages) , 1)}">
                                         <button class="page-link page-number" th:onclick="|handlePage(${i})|"
                                                 th:text="${i}"></button>
                                     </li>
                                     <li aria-current="page" class="page-item"
-                                        th:if="${domains.totalPages >5 && domains.number <= 2 }"
-                                        th:classappend="${i eq domains.number + 1} ? 'active'"
+                                        th:if="${result.totalPages >5 && result.number <= 2 }"
+                                        th:classappend="${i eq result.number + 1} ? 'active'"
                                         th:each="i : ${#numbers.sequence( 1 ,5, 1)}">
                                         <button class="page-link page-number" th:onclick="|handlePage(${i})|"
                                                 th:text="${i}"></button>
                                     </li>
                                     <li aria-current="page" class="page-item"
-                                        th:if="${domains.totalPages <= 5}"
-                                        th:classappend="${i eq domains.number + 1} ? 'active'"
-                                        th:each="i : ${#numbers.sequence(1, domains.totalPages , 1)}">
+                                        th:if="${result.totalPages <= 5}"
+                                        th:classappend="${i eq result.number + 1} ? 'active'"
+                                        th:each="i : ${#numbers.sequence(1, result.totalPages , 1)}">
                                         <button class="page-link page-number" th:onclick="|handlePage(${i})|"
                                                 th:text="${i}"></button>
                                     </li>
                                     <li class="page-item">
-                                        <button class="page-link" th:onclick="|handlePage(${domains.number +2 > domains.totalPages ? domains.totalPages :domains.number +2 })|"><i class="material-icons">keyboard_arrow_right</i>
+                                        <button class="page-link" th:onclick="|handlePage(${result.number +2 > result.totalPages ? result.totalPages :result.number +2 })|"><i class="material-icons">keyboard_arrow_right</i>
                                         </button>
                                     </li>
                                     <li class="page-item">
-                                        <button class="page-link" th:onclick="|handlePage(${domains.totalPages})|"><i class="material-icons">keyboard_double_arrow_right</i>
+                                        <button class="page-link" th:onclick="|handlePage(${result.totalPages})|"><i class="material-icons">keyboard_double_arrow_right</i>
                                         </button>
                                     </li>
                                 </ul>
