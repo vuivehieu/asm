@@ -16,6 +16,69 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <title>ASM</title>
+    <script language="javascript" type="text/javascript">
+        function sortTable(n) {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("example");
+            switching = true;
+            //Set the sorting direction to ascending:
+            dir = "asc";
+            /*Make a loop that will continue until
+            no switching has been done:*/
+            while (switching) {
+                //start by saying: no switching is done:
+                switching = false;
+                rows = table.rows;
+                /*Loop through all table rows (except the
+                first, which contains table headers):*/
+                for (i = 1; i < (rows.length - 1); i++) {
+                    //start by saying there should be no switching:
+                    shouldSwitch = false;
+                    /*Get the two elements you want to compare,
+                    one from current row and one from the next:*/
+                    x = rows[i].getElementsByTagName("TD")[n];
+                    y = rows[i + 1].getElementsByTagName("TD")[n];
+                    /*check if the two rows should switch place,
+                    based on the direction, asc or desc:*/
+                    if (dir == "asc") {
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            //if so, mark as a switch and break the loop:
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir == "desc") {
+                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            //if so, mark as a switch and break the loop:
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    /*If a switch has been marked, make the switch
+                    and mark that a switch has been done:*/
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    //Each time a switch is done, increase this count by 1:
+                    switchcount++;
+                } else {
+                    /*If no switching has been done AND the direction is "asc",
+                    set the direction to "desc" and run the while loop again.*/
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
+        // $('#example').DataTable( {
+        //     "paging":   false,
+        //     "ordering": true,
+        //     "info":     false,
+        //
+        //     searching: false
+        // } );
+    </script>
 </head>
 <body>
 <!-- Navigation -->
@@ -61,7 +124,7 @@
                                 <div class="input-group" style="position: relative;width: 75%;margin-left: auto;margin-bottom: 15px;">
                                     <input class="form-control" id="textSearch" value="" type="text" placeholder="Search for result" style="margin-left:-2%;background: #cfcfcf;border-radius: 20px;padding: 10px 20px;">
                                     <div class="input-group-append" style="position: absolute;right: 0;z-index: 10;">
-                                        <button class="btn btn-secondary"  type="button" onclick="search()">
+                                        <button class="btn btn-secondary"  type="button" th:onclick="|handleSearch()|">
                                             <i class="fa fa-search"></i>
                                         </button>
                                     </div>
@@ -79,42 +142,21 @@
                                 <table id="example" style="text-align: center" class="table">
                                     <tbody>
                                     <tr>
-                                        <th>No</th>
-                                        <th>ID</th>
-                                        <th>Port Number</th>
-                                        <th>Protocol</th>
-                                        <th>Status</th>
-                                        <th>Subdomain IP</th>
-                                        <th></th>
+                                        <th th:onclick="sortTable(0)" class="cursor-pointer">No</th>
+                                        <th th:onclick="sortTable(1)" class="cursor-pointer">ID</th>
+                                        <th th:onclick="sortTable(2)" class="cursor-pointer">Port Number</th>
+                                        <th th:onclick="sortTable(3)" class="cursor-pointer">Protocol</th>
+                                        <th th:onclick="sortTable(4)" class="cursor-pointer">Status</th>
+                                        <th th:onclick="sortTable(5)" class="cursor-pointer">Subdomain IP</th>
                                     </tr>
                                     <th:block th:each="item,itemIndex : ${nmaps.content}">
                                         <tr class="to-pointer">
-<!--                                        <tr class="showDetail to-pointer" th:data-createddate="${item.createdDate.toString().substring(0,10)}" th:data-username="${item.username}" th:data-campusname="${item.campusName}" th:data-userid="${item.idNumber}" th:data-email="${item.email}" th:data-fullname="${item.fullName}" th:data-firstname="${item.firstName}" th:data-lastname="${item.lastName}" th:data-age="${item.age}" th:data-phone="${item.phone}" th:data-birthdate="${item.birthDate}" th:data-role="${item.fullRole}">-->
-<!--                                            <th:block th:if="${curPage>1}">-->
-<!--                                                <td th:text="${itemIndex.index +1 + item.pageable.getPageSize()*(curPage-1)}"></td>-->
-<!--                                            </th:block>-->
-<!--                                            <th:block th:if="${curPage==1}">-->
-<!--                                                <td th:text="${itemIndex.index +1}"></td>-->
-<!--                                            </th:block>-->
-                                            <td th:text="${itemIndex.index}"></td>
+                                            <td th:text="${itemIndex.index+1}"></td>
                                             <td th:text="${item.id}"></td>
                                             <td th:text="${item.portNumber}"></td>
                                             <td th:text="${item.protocol}"></td>
                                             <td th:text="${item.status}"></td>
                                             <td th:text="${item.subdomainIp.ip}"></td>
-<!--                                            <td th:text="${item.fullName}"></td>-->
-<!--                                            <td th:text="${item.username}"></td>-->
-<!--                                            <td th:text="${item.roleName}"></td>-->
-<!--                                            <td th:text="${item.createdDate.toString().substring(0,10)}"></td>-->
-<!--                                            <td th:switch="${item.isActive}">-->
-<!--                                                <span class="badge  badge-success" th:case='true' th:text="#{user.active}"></span>-->
-<!--                                                <span class="badge  badge-light" th:case='false' th:text="#{user.inactive}"></span>-->
-<!--                                            </td>-->
-<!--                                            <td>-->
-<!--                                                <button class="btn text-primary rounded-circle m-0 btn-sm btn-icon" style="height: 0px !important;" th:onclick="|handleEdit(event, ${item.id})|" ><i class="material-icons" >edit</i><div class="ripple-container"></div></button>-->
-<!--                                                <button class="btn text-danger rounded-circle m-0 btn-sm btn-icon" style="height: 0px !important;" th:onclick="|handleDelete(event, ${item.id})|" ><i class="material-icons">delete</i></button>-->
-
-<!--                                            </td>-->
                                         </tr>
                                     </th:block>
                                     </tbody>
@@ -175,10 +217,6 @@
         </div>
         <!-- End::Main header-->
     </div>
-<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
-<script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
-<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
-<script th:src="@{assets/datatable/datatables.js}"></script>
 </div>
 </body>
 </html>

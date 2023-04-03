@@ -6,6 +6,7 @@ import com.example.asm.mapper.SubdomainIpMapper;
 import com.example.asm.mapper.SubdomainMapper;
 import com.example.asm.repository.ISubdomainIpRepository;
 import com.example.asm.repository.ISubdomainRepository;
+import com.example.asm.service.ISubdomainIpService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.net.URLDecoder;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,25 +28,21 @@ import java.util.stream.IntStream;
 @RequestMapping(value = "/subdomain-ip")
 public class SubdomainIpController {
     @Autowired
-    ISubdomainIpRepository repository;
-    @Autowired
-    SubdomainIpMapper mapper;
+    ISubdomainIpService service;
     @GetMapping
     public String findAllResultNuclei(Model model,
                                       @RequestParam("page") Optional<Integer> page,
                                       @RequestParam("size") Optional<Integer> size,
                                       @RequestParam("search") Optional<String> search,
-                                      @RequestParam("lang") Optional<String> lang,
                                       HttpServletRequest request){
         int pageIndex = page.orElse(1);
         int pageSize = size.orElse(5);
-        String i18n = lang.orElse(null);
         String searchField = search.orElse(null);
-        Page<SubdomainIpDto> resultPage = this.repository.findAll(PageRequest.of(pageIndex-1,pageSize, Sort.by("id").descending())).map(x->mapper.toDto(x));
-//        if(searchField!=null){
-//            searchField = URLDecoder.decode(searchField);
-//            domainPage = this.domainRepository.searchUser(PageRequest.of(pageIndex-1,pageSize,Sort.by("create_date").descending().and(Sort.by("full_name").descending())),searchField,i18n);
-//        }
+        Page<SubdomainIpDto> resultPage = this.service.findAllPage(PageRequest.of(pageIndex-1,pageSize, Sort.by("id").descending()));
+        if(searchField!=null){
+            searchField = URLDecoder.decode(searchField);
+            resultPage = this.service.searchPage(PageRequest.of(pageIndex-1,pageSize,Sort.by("id").descending()),searchField);
+        }
         model.addAttribute("result", resultPage);
         int totalPage = resultPage.getTotalPages();
         if(totalPage>0){

@@ -49,6 +49,7 @@
 <script>
   // get the current URL
   var url = window.location.href;
+  var baseUrl = url.split('?')[0];
 
   // get all menu items
   var menuItems = document.querySelectorAll('#ul-menu li');
@@ -59,9 +60,41 @@
     var link = item.querySelector('a').href;
 
     // if the current URL contains the link, add the active class
-    if (url.indexOf(link) !== -1 && url.endsWith(link)) {
+    if (baseUrl.indexOf(link) !== -1 && baseUrl.endsWith(link)) {
       item.querySelector('a').style.color = 'white';
     }
   });
+  function handlePage(choosePage) {
+    let link = window.location.href;
+    if (link.indexOf("?") == -1) {
+      link += "?page=" + choosePage;
+    } else if (link.indexOf("page") == -1) {
+      link += "&page=" + choosePage;
+    } else {
+      let startOfPage = link.indexOf("page=");
+      let endOfPage = link.indexOf("&", startOfPage);
+      if (endOfPage == -1) {
+        endOfPage = link.length;
+      }
+      let currentPage = link.slice(startOfPage + 5, endOfPage);
+      if (currentPage == choosePage) {
+        return;
+      }
+      link = link.replace(/page=\d+/, "page=" + choosePage);
+    }
+    window.location.href = link;
+  }
+  function handleSearch() {
+    let link = window.location.href;
+    let search = document.getElementById("textSearch").value;
+    if (link.indexOf("?") == -1) {
+      link = link + "?search=" + search + "&page=1";
+      window.location.href = link;
+    } else {
+      link = link.slice(0, link.indexOf("?")) + "?search=" + search + "&page=1";
+      window.location.href = link;
+    }
+    window.location.href = link;
+  }
 </script>
 
