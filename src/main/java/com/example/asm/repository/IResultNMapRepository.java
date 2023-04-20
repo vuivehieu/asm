@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface IResultNMapRepository extends JpaRepository<ResultNMapEntity, Integer> {
+public interface  IResultNMapRepository extends JpaRepository<ResultNMapEntity, Integer> {
     @Query(value = "SELECT * FROM tbl_result_nmap d WHERE d.status LIKE %:d% OR " +
             "d.protocol LIKE %:d% or " +
             "d.port_number LIKE %:d% or " +
