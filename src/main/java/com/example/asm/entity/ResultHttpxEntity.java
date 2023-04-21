@@ -14,8 +14,10 @@ public class ResultHttpxEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "out_put")
-    private String outPut;
+    @Column(name = "protocol")
+    private String protocol;
+    @Column(name = "web_tech")
+    private String webTech;
     @ManyToOne(targetEntity = DomainEntity.class,cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
     @JoinColumn(name = "domain_id")
     private DomainEntity domainEntity;

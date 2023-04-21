@@ -7,9 +7,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ResultHttpxDto {
+public class ResultVulsNMapDto {
     private int id;
-    private String protocol;
-    private String webTech;
-    private DomainDto domain;
+    private String outPut;
+    private SubdomainIpDto subdomainIp;
 }
