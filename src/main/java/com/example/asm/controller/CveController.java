@@ -58,7 +58,7 @@ public class CveController {
         }
         request.getSession().setAttribute("ref",request.getRequestURI());
         model.addAttribute("searchField", searchField);
-        return null;
+        return "cve";
     }
 
     @GetMapping("/export/excel")
