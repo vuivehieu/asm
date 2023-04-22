@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "tbl_result_vuls_nmap")
+@Table(name = "result_vuls_nmap")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,6 +17,6 @@ public class ResultVulsNMapEntity {
     @Column(name = "output")
     private String outPut;
     @ManyToOne(targetEntity = SubdomainIpEntity.class,cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
-    @JoinColumn(name = "subdomain_ip_id")
+    @JoinColumn(name = "id_ip")
     private SubdomainIpEntity subdomainIp;
 }

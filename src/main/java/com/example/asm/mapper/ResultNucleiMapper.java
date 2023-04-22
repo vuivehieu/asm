@@ -11,9 +11,8 @@ public class ResultNucleiMapper {
     SubdomainIpMapper subdomainIpMapper;
     public ResultNucleiDto toDto(ResultNucleiEntity entity){
         return ResultNucleiDto.builder().id(entity.getId())
-                .protocol(entity.getProtocol())
+                .output(entity.getOutput())
                 .subdomainIp(subdomainIpMapper.toDto(entity.getSubdomainIp()))
-                .vulnerabilityName(entity.getVulnerabilityName())
                 .build();
     }
 }

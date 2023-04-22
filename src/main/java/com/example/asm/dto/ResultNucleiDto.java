@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 @Builder
 public class ResultNucleiDto {
     private int id;
-    private String vulnerabilityName;
-    private String protocol;
+    private String output;
     private SubdomainIpDto subdomainIp;
 }

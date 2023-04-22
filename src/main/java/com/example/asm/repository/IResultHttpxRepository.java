@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface IResultHttpxRepository extends JpaRepository<ResultHttpxEntity, Integer> {
-    @Query(value = "SELECT d FROM ResultHttpxEntity d WHERE d.protocol LIKE %:d% OR " +
-            "d.webTech LIKE %:d%")
+    @Query(value = "SELECT d FROM ResultHttpxEntity d WHERE d.output LIKE %:d%")
     Page<ResultHttpxEntity> searchAllBy(Pageable pageable, @Param("d") String d);
 }
