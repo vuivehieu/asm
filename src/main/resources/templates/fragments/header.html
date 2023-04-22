@@ -6,7 +6,7 @@
     <div class="app-user text-center">
       <div class="app-user-photo"><img src="/admin-template/images/avatars/005-man-2.svg" alt="" /></div>
       <div class="app-user-info"><span class="app-user-name">ADMIN</span>
-        <div class="app-user-control"><a class="control-item" href="#"><i class="material-icons">person</i></a><a class="control-item" href="#"><i class="material-icons"> exit_to_app</i></a></div>
+        <div class="app-user-control"><a class="control-item" th:href="@{/sign-out}"><i class="material-icons"> exit_to_app</i></a></div>
       </div>
     </div>
     <!-- End:: user-->
@@ -20,8 +20,8 @@
             <li><a th:href="@{subdomain-ip}" style="color: #c7c7c7"><i class="material-icons nav-icon">lan</i>Subdomain IP Management</a></li>
             <li><a th:href="@{result-n-map}" style="color: #c7c7c7"><i class="material-icons nav-icon">assignment_returned</i>Result NMap Management</a></li>
             <li><a th:href="@{result-nuclei}" style="color: #c7c7c7"><i class="material-icons nav-icon">assignment_return</i>Result Nuclei Management</a></li>
-            <li><a th:href="@{chart}" style="color: #c7c7c7"><i class="material-icons nav-icon">collections</i>Chart Management</a></li>
-            <li><a th:href="@{cve}" style="color: #c7c7c7"><i class="material-icons nav-icon">face</i>CVE Management</a></li>
+            <li><a th:href="@{scan}" style="color: #c7c7c7"><i class="material-icons nav-icon">radar</i>All Scan</a></li>
+            <li><a th:href="@{trash}" style="color: #c7c7c7"><i class="material-icons nav-icon">delete_sweep</i>Trash</a></li>
 <!--            <li><a href="${gallery}"><i class="material-icons nav-icon">collections</i><spring:message code="header.gallery.management"/></a></li>-->
 <!--            <li><a href="${notification}"><i class="material-icons nav-icon">circle_notifications</i><spring:message code="header.notification.management"/></a></li>-->
 <!--            <li><a href="${faq}"><i class="material-icons nav-icon">quiz</i>FAQ Management</a></li>-->
@@ -97,6 +97,46 @@
       window.location.href = link;
     }
     window.location.href = link;
+  }
+
+  function handleSearchCve() {
+    let link = window.location.href;
+    let search = document.getElementById("textSearch").value;
+
+    if(link.indexOf("?chartColumn") != -1) {
+      const parsedUrl = new URL(link);
+      const origin = parsedUrl.origin;
+      const pathname = parsedUrl.pathname;
+      const search1 = parsedUrl.search.split("&")[0];
+      const newUrl = origin + pathname + search1;
+      window.location.href = newUrl + "&search=" + search + "&page=1";
+    }
+
+  }
+
+  function exportExcel() {
+    let link = window.location.href;
+
+    if(link.indexOf("?chartColumn") != -1) {
+      const parsedUrl = new URL(link);
+
+      const origin = parsedUrl.origin;
+      const pathname = parsedUrl.pathname;
+      const search = parsedUrl.search.split("&")[0];
+      const newUrl = origin + "/export/excel" + pathname + search;
+      window.location.href = newUrl;
+    }
+  }
+
+  function exportExcelAll(){
+    let link = window.location.href;
+
+    const parsedUrl = new URL(link);
+
+    const origin = parsedUrl.origin;
+    const pathname = parsedUrl.pathname;
+    const newUrl = origin + "/export/excel" + pathname;
+    window.location.href = newUrl;
   }
 </script>
 

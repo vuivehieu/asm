@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -17,21 +17,23 @@
       <div class="card-body">
         <span class="text-primary text-18 d-block font-weight-bold">ASM</span>
         <span class="mb-md text-muted mb-lg d-block">Create a new account</span>
+        <form action="#" th:action="@{/sign-up}" th:object="${register}" method="post" style="margin-bottom: 100px">
         <div class="input-group  input-light mb-md">
-          <input type="text" class="form-control" placeholder="Username">
+          <input type="text" class="form-control" th:field="*{username}" placeholder="Username">
         </div>
         <div class="input-group  input-light mb-md">
-          <input type="password" class="form-control" placeholder="Password">
+          <input type="password" class="form-control" th:field="*{password}" placeholder="Password">
         </div>
         <div class="input-group  input-light mb-md">
-          <input type="password" class="form-control" placeholder="Confirm Password">
+          <input type="password" class="form-control" th:field="*{rePassword}" placeholder="Confirm Password">
         </div>
-        <div class="row">
-          <button type="button" style="width: 50%" class="btn btn-raised btn-raised-primary btn-block mb-xl">Submit</button>
-          <button type="button" style="width: 50%" class="btn btn-raised btn-raised-secondary btn-block mb-xl">Sign In</button>
-      </div>
+          <button type="submit" style="width: 50%" class="btn btn-raised btn-raised-primary btn-block mb-xl">Submit</button>
+        </form>
+        <p>Already have an account?</p>
+        <a style="width: 50%" th:href="@{/sign-in}" class="btn btn-raised btn-raised-secondary btn-block mb-xl">Sign in</a>
       </div>
     </div>
   </div>
 </div>
 </body>
+</html>

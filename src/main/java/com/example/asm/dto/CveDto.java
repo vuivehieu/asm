@@ -10,7 +10,7 @@ import lombok.*;
 public class CveDto {
     private Long id;
     private String cveId;
-    private String cvssPoint;
+    private float cvssPoint;
     private String descriptions;
     private String webTech;
     private String link;
