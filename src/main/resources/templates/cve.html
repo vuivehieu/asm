@@ -118,6 +118,12 @@
 <!--                                    </select>-->
 <!--                                    <div class="input-group-append" style="position: absolute;right: 0;z-index: 10;">-->
 <!--                                    </div>-->
+<!--                                    button expert excel not dropdown-->
+                                    <div class="btn-group" style="margin-left: 10px">
+                                        <button th:onclick="|exportExcel()|" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fa fa-download">Export Excel</i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-sm-12 col-md-6">
@@ -159,7 +165,7 @@
                                             <td th:text="${item.cveId}"></td>
                                             <td th:text="${item.cvssPoint}"></td>
                                             <td th:text="${item.descriptions}"></td>
-                                            <td th:text="${item.link}"></td>
+                                            <td><a th:href="${item.link}">Liên kết</a></td>
                                         </tr>
                                     </th:block>
                                     </tbody>

@@ -1,9 +1,7 @@
 package com.example.asm.controller;
 
 import com.example.asm.dto.CveDto;
-import com.example.asm.dto.ResultNMapDto;
-import com.example.asm.dto.ResultVulsNMapDto;
-import com.example.asm.service.ExportExcelVuls;
+import com.example.asm.service.ExportExcelCve;
 import com.example.asm.service.ICveService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -124,7 +122,7 @@ public class CveController {
 
         List<CveDto> cveDtos = service.findAll();
 
-        ExportExcelVuls excelExporter = new ExportExcelVuls(cveDtos);
+        ExportExcelCve excelExporter = new ExportExcelCve(cveDtos);
 
         excelExporter.export(response);
     }

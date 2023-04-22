@@ -116,7 +116,10 @@
 <!--                                        <option value="application" ${filter == 'application' ? 'selected' : ''}><spring:message code="file.media"/></option>-->
 <!--                                        <option value="image" ${filter == 'image' ? 'selected' : ''}><spring:message code="file.file"/></option>-->
 <!--                                    </select>-->
-                                    <div class="input-group-append" style="position: absolute;right: 0;z-index: 10;">
+                                    <div class="btn-group" style="margin-left: 10px">
+                                        <button th:onclick="|exportExcelAll()|" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fa fa-download">Export Excel</i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -131,14 +134,14 @@
 <!--                                </div>-->
                             </div>
                         </div>
-                        <div class="card-header" style="background: #242939 ;display: flex;justify-content: space-between;">
+                        <div class="card-header" style="background: #242939 ;display: flex;justify-content: space-between;margin-bottom: 3rem">
                             <h2 class="p-1 m-0 text-16 font-weight-semi " style="color: white">Domain Management</h2>
                             <div style="color: white" class="p-1 m-0 text-16">
 <!--                                <i class="fa fa-plus" aria-hidden="true" data-toggle="modal" data-target="#ModalAdd" style="cursor: pointer"></i>-->
                             </div>
                         </div>
 <!--                        Chart-->
-                        <div style="margin: 3rem; display: flex; justify-content: center;">
+                        <div style="margin-left: auto; margin-right: auto;height: 540px !important; width: 960px !important;">
                             <canvas id="myChart"></canvas>
                         </div>
                         <div style="text-align: center;">
@@ -178,7 +181,7 @@
             labels: ["Critical Rick", "High Rick", "Medium Rick", "Low Rick", "No Rick"],
             datasets: [
                 {
-                    label: "Hidden Chart",
+                    label: "List CVE of Subdomain",
                     data: [cvesCritical.length, cvesHigh.length, cvesMedium.length, cvesLow.length, cvesNoRick.length],
                     borderWidth: 1,
                     backgroundColor: [

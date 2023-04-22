@@ -6,7 +6,6 @@ import com.example.asm.dto.CveDto;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 
-import com.example.asm.dto.ResultVulsNMapDto;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -14,12 +13,12 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-public class ExportExcelVuls {
+public class ExportExcelCve {
     private XSSFWorkbook workbook;
     private XSSFSheet sheet;
     private List<CveDto> cveDto;
 
-    public ExportExcelVuls(List<CveDto> cveDto) {
+    public ExportExcelCve(List<CveDto> cveDto) {
         this.cveDto = cveDto;
         workbook = new XSSFWorkbook();
     }
@@ -51,7 +50,12 @@ public class ExportExcelVuls {
             cell.setCellValue((Integer) value);
         } else if (value instanceof Boolean) {
             cell.setCellValue((Boolean) value);
-        }else {
+        }else if (value instanceof Long) {
+            cell.setCellValue((Long) value);
+        }else if (value instanceof Float) {
+            cell.setCellValue((Float) value);
+        }
+        else {
             cell.setCellValue((String) value);
         }
         cell.setCellStyle(style);

@@ -17,7 +17,6 @@ public interface ICveService extends IBaseService<CveDto> {
     List<CveDto> findAllByDomainId(int domainId);
 
     List<CveDto> findAllByDomainIdAndCvssPointIsNull(int domainId);
-
     List<CveDto> findAllByDomainIdAndCvssPointLow(int domainId);
     List<CveDto> findAllByDomainIdAndCvssPointMedium(int domainId);
     List<CveDto> findAllByDomainIdAndCvssPointHigh(int domainId);
