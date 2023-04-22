@@ -19,4 +19,7 @@ public class DomainDto {
     private int id;
     private String domainName;
     private LocalDateTime createdDate;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private int status;
 }
