@@ -22,4 +22,10 @@ public class DomainEntity {
     @CreationTimestamp
     @Column(name = "date_created")
     private LocalDateTime createdDate;
+    @Column(name = "start_time")
+    private LocalDateTime startTime;
+    @Column(name = "end_time")
+    private LocalDateTime endTime;
+    @Column(name = "status")
+    private int status;
 }

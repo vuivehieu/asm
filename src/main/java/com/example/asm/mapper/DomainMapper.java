@@ -8,7 +8,11 @@ import org.springframework.stereotype.Component;
 public class DomainMapper {
     public DomainDto toDto(DomainEntity entity){
         return DomainDto.builder().id(entity.getId())
+                .startTime(entity.getStartTime())
+                .endTime(entity.getEndTime())
+                .status(entity.getStatus())
                 .domainName(entity.getDomainName())
                 .createdDate(entity.getCreatedDate()).build();
     }
+
 }
