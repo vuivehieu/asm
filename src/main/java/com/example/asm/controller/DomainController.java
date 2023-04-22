@@ -56,8 +56,14 @@ public class DomainController {
         return "index";
     }
 
-    @GetMapping("/export/excel")
-    public void exportToExcel(HttpServletResponse response, @RequestParam Integer id) {
+    @GetMapping("/export")
+    public void exportToExcel(HttpServletResponse response, @RequestParam("id") Integer id) {
         domainService.exportToExcel(id, response);
+    }
+
+    @GetMapping("/delete")
+    public String deleteDomain(@RequestParam("id") Integer id) {
+        domainService.deleteDomain(id);
+        return "redirect:/domain";
     }
 }

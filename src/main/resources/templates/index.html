@@ -156,8 +156,8 @@
                                             <td th:text="${item.id}"></td>
                                             <td th:text="${item.domainName}"></td>
                                             <td th:text="${item.createdDate}"></td>
-                                            <td class="cursor-pointer text-red">Delete</td>
-                                            <td class="cursor-pointer text-blue"><a th:href="@{/domain/export/excel(id=${item.id})}">Download</a></td>
+                                            <td><a class="text-red" th:href="@{/domain/delete(id=${item.id})}">Delete</a></td>
+                                            <td><a th:href="@{/domain/export(id=${item.id})}">Download</a></td>
                                         </tr>
                                     </th:block>
                                     </tbody>

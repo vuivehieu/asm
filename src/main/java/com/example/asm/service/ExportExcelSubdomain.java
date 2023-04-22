@@ -11,20 +11,21 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.IOException;
+import java.util.Map;
 
-public class ExportExcelDomain {
+public class ExportExcelSubdomain {
     private XSSFWorkbook workbook;
     private XSSFSheet sheet;
-    private DomainDto domainDto;
+    private Map<String, Object> subdomain;
 
-    public ExportExcelDomain(DomainDto domainDto) {
-        this.domainDto = domainDto;
+    public ExportExcelSubdomain(Map<String, Object> subdomain) {
+        this.subdomain = subdomain;
         workbook = new XSSFWorkbook();
     }
 
 
     private void writeHeaderLine() {
-        sheet = workbook.createSheet("Domain");
+        sheet = workbook.createSheet("Subdomain");
 
         Row row = sheet.createRow(0);
 
@@ -34,9 +35,11 @@ public class ExportExcelDomain {
         font.setFontHeight(16);
         style.setFont(font);
 
-        createCell(row, 0, "ID", style);
-        createCell(row, 1, "Domain Name", style);
-        createCell(row, 2, "Create Date", style);
+        createCell(row, 0, "Subdomain", style);
+        createCell(row, 1, "IP", style);
+        createCell(row, 2, "Port", style);
+        createCell(row, 3, "Technical", style);
+        createCell(row, 4, "Vul Scan", style);
 
     }
 
@@ -62,9 +65,11 @@ public class ExportExcelDomain {
         Row row = sheet.createRow(1);
         int columnCount = 0;
 
-        createCell(row, columnCount++, domainDto.getId(), style);
-        createCell(row, columnCount++, domainDto.getDomainName(), style);
-        createCell(row, columnCount, domainDto.getCreatedDate().toString(), style);
+        createCell(row, columnCount++, subdomain.get("subdomain"), style);
+        createCell(row, columnCount++, subdomain.get("ip"), style);
+        createCell(row, columnCount++, subdomain.get("port").toString().replace("[", "").replace("]", ""), style);
+        createCell(row, columnCount++, subdomain.get("technical").toString().replace("[", "").replace("]", ""), style);
+        createCell(row, columnCount, subdomain.get("vul").toString().replace("[", "").replace("]", ""), style);
     }
 
     public void export(HttpServletResponse response) throws IOException {

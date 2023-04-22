@@ -1,13 +1,9 @@
 package com.example.asm.controller;
 
-import com.example.asm.dto.ResultNucleiDto;
 import com.example.asm.dto.SubdomainDto;
-import com.example.asm.mapper.ResultNucleiMapper;
-import com.example.asm.mapper.SubdomainMapper;
-import com.example.asm.repository.IResultNucleiRepository;
-import com.example.asm.repository.ISubdomainRepository;
 import com.example.asm.service.ISubdomainService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.net.URLDecoder;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -55,5 +52,23 @@ public class SubdomainController {
         request.getSession().setAttribute("ref",request.getRequestURI());
         model.addAttribute("searchField", searchField);
         return "subdomain";
+    }
+
+    @GetMapping("/more-information")
+    public String getMoreInformation(Model model, @RequestParam("id") Integer id){
+        Map<String, Object> result = service.getMoreInformation(id);
+        model.addAttribute("infor", result);
+        return "subdomain";
+    }
+
+    @GetMapping("/export")
+    public void export(HttpServletResponse response, @RequestParam("id") Integer id){
+        service.export(id, response);
+    }
+
+    @GetMapping("/delete")
+    public String deleteById(@RequestParam("id") Integer id){
+        service.deleteById(id);
+        return "redirect:/subdomain";
     }
 }
