@@ -9,7 +9,6 @@ import lombok.*;
 @Builder
 public class ResultHttpxDto {
     private int id;
-    private String protocol;
-    private String webTech;
+    private String output;
     private DomainDto domain;
 }

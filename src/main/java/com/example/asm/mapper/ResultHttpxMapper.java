@@ -12,8 +12,7 @@ public class ResultHttpxMapper {
     public ResultHttpxDto toDto(ResultHttpxEntity entity){
         return ResultHttpxDto.builder()
                 .id(entity.getId())
-                .protocol(entity.getProtocol())
-                .webTech(entity.getWebTech())
+                .output(entity.getOutput())
                 .domain(domainMapper.toDto(entity.getDomainEntity()))
                 .build();
     }
