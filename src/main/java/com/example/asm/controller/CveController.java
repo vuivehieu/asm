@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -43,6 +44,35 @@ public class CveController {
         int pageSize = size.orElse(5);
         String searchField = search.orElse(null);
         Page<CveDto> cvePage = this.service.findAllPage(PageRequest.of(pageIndex-1,pageSize, Sort.by("id").descending()));
+        if(searchField!=null){
+            searchField = URLDecoder.decode(searchField);
+            cvePage = this.service.searchPage(PageRequest.of(pageIndex-1,pageSize,Sort.by("id").descending()),searchField);
+        }
+        model.addAttribute("cves", cvePage);
+        int totalPage = cvePage.getTotalPages();
+        if(totalPage>0){
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPage)
+                    .boxed()
+                    .collect(Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+            model.addAttribute("curPage", pageIndex);
+        }
+        request.getSession().setAttribute("ref",request.getRequestURI());
+        model.addAttribute("searchField", searchField);
+        return "cve";
+    }
+
+    @GetMapping("{id}")
+    public String findAllCveByDomainId(Model model,
+                                @PathVariable("id") int id,
+                             @RequestParam("page") Optional<Integer> page,
+                             @RequestParam("size") Optional<Integer> size,
+                             @RequestParam("search") Optional<String> search,
+                             HttpServletRequest request){
+        int pageIndex = page.orElse(1);
+        int pageSize = size.orElse(5);
+        String searchField = search.orElse(null);
+        Page<CveDto> cvePage = this.service.findAllPageByDomainId(PageRequest.of(pageIndex-1,pageSize, Sort.by("id").descending()), id);
         if(searchField!=null){
             searchField = URLDecoder.decode(searchField);
             cvePage = this.service.searchPage(PageRequest.of(pageIndex-1,pageSize,Sort.by("id").descending()),searchField);

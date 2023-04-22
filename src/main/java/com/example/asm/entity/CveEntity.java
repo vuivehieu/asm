@@ -17,7 +17,7 @@ public class CveEntity {
     @Column(name = "cve_id")
     private String cveId;
     @Column(name = "cvss_point")
-    private Float cvssPoint;
+    private String cvssPoint;
     @Column(name = "descriptions")
     private String descriptions;
     @Column(name = "web_tech")

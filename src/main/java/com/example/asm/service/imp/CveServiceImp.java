@@ -27,6 +27,10 @@ public class CveServiceImp implements ICveService {
         return cveRepository.findAll(pageable).map(cve -> cveMapper.toDto(cve));
     }
 
+    public Page<CveDto> findAllPageByDomainId(Pageable pageable, int domainId) {
+        return cveRepository.findAllByDomainId(pageable, domainId).map(cve -> cveMapper.toDto(cve));
+    }
+
     @Override
     public Page<CveDto> searchPage(Pageable pageable, String search) {
         return cveRepository.searchAllBy(pageable, search).map(cve -> cveMapper.toDto(cve));

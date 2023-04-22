@@ -14,4 +14,7 @@ public interface ICveRepository extends JpaRepository<CveEntity, Long> {
             "OR cve.link LIKE %:d% " +
             "OR cve.web_tech LIKE %:d% ", nativeQuery = true)
     Page<CveEntity> searchAllBy(Pageable pageable, @Param("d") String d);
+
+    @Query(value = "SELECT * FROM cve WHERE cve.id_domain = :domainId", nativeQuery = true)
+    Page<CveEntity> findAllByDomainId(Pageable pageable, int domainId);
 }
