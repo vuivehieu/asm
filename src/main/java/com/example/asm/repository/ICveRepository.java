@@ -4,13 +4,14 @@ import com.example.asm.entity.CveEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
 public interface ICveRepository extends JpaRepository<CveEntity, Long> {
-    @Query(value = "SELECT * FROM tbl_cve cve WHERE cve.cve_id LIKE %:d% " +
+    @Query(value = "SELECT * FROM cve cve WHERE cve.cve_id LIKE %:d% " +
             "OR cve.cvss_point LIKE %:d% " +
             "OR cve.descriptions LIKE %:d% " +
             "OR cve.link LIKE %:d% " +
@@ -59,4 +60,8 @@ public interface ICveRepository extends JpaRepository<CveEntity, Long> {
     Page<CveEntity> searchAllByDomainIdAndCvssPointCriticalPage(Pageable pageable, int domainId, String d);
     @Query(value = "select * from cve where id_domain = ?1 and cvss_point = 0 AND (cve.cve_id LIKE %?2% \n" + "OR cve.cvss_point LIKE %?2% \n" + "OR cve.descriptions LIKE %?2% \n" + ") ", nativeQuery = true)
     Page<CveEntity> searchAllByDomainIdAndCvssPointIsNullPage(Pageable pageable, int domainId, String d);
+
+    @Modifying
+    @Query(value = "delete from cve where id_domain = :id", nativeQuery = true)
+    void deleteByDomainId(@Param("id") Integer id);
 }

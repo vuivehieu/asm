@@ -1,14 +1,21 @@
 package com.example.asm.service.imp;
 
-import com.example.asm.dto.SubdomainDto;
-import com.example.asm.mapper.SubdomainMapper;
-import com.example.asm.repository.ISubdomainRepository;
+import com.example.asm.dto.*;
+import com.example.asm.entity.SubdomainIpEntity;
+import com.example.asm.mapper.*;
+import com.example.asm.repository.*;
+import com.example.asm.service.ExportExcelSubdomain;
 import com.example.asm.service.ISubdomainService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -16,7 +23,26 @@ public class SubdomainServiceImp implements ISubdomainService {
     @Autowired
     ISubdomainRepository repository;
     @Autowired
+    ISubdomainIpRepository subdomainIpRepository;
+    @Autowired
+    IResultNMapRepository resultNMapRepository;
+    @Autowired
+    IResultHttpxRepository resultHttpxRepository;
+    @Autowired
+    IResultNucleiRepository resultNucleiRepository;
+    @Autowired
+    IResultVulsNMapRepository resultVulsNMapRepository;
+
+    @Autowired
     SubdomainMapper mapper;
+    @Autowired
+    SubdomainIpMapper subdomainIpMapper;
+    @Autowired
+    ResultNMapMapper resultNMapMapper;
+    @Autowired
+    ResultHttpxMapper resultHttpxMapper;
+    @Autowired
+    ResultNucleiMapper resultNucleiMapper;
     @Override
     public Page<SubdomainDto> findAllPage(Pageable pageable) {
         return this.repository.findAll(pageable).map(x->mapper.toDto(x));
@@ -25,5 +51,72 @@ public class SubdomainServiceImp implements ISubdomainService {
     @Override
     public Page<SubdomainDto> searchPage(Pageable pageable, String search) {
         return this.repository.searchAllBy(pageable,search).map(mapper::toDto);
+    }
+
+    @Override
+    public Map<String, Object> getMoreInformation(Integer id) {
+        Map<String, Object> result = new HashMap<>();
+        SubdomainDto subdomainDto = mapper.toDto(repository.findById(id).orElseThrow());
+        SubdomainIpDto subdomainIpDto = subdomainIpMapper.toDto(subdomainIpRepository.findBySubdomainId(id));
+        List<ResultNMapDto> resultNMapDtos = resultNMapRepository.getALlBySubdomainIp(subdomainIpDto.getId()).stream().map(x -> resultNMapMapper.toDto(x)).collect(Collectors.toList());
+        List<ResultHttpxDto> resultHttpxDtos = resultHttpxRepository.findByDomainId(subdomainDto.getDomain().getId(), subdomainIpDto.getIp()).stream().map(x -> resultHttpxMapper.toDto(x)).collect(Collectors.toList());
+        List<ResultNucleiDto> resultNucleiDtos = resultNucleiRepository.findAllBySubdomainIpId(subdomainIpDto.getId()).stream().map(x -> resultNucleiMapper.toDto(x)).collect(Collectors.toList());
+
+        Set<String> technical = new HashSet<>();
+        Set<String> ports = new HashSet<>();
+        List<String> vul = new ArrayList<>();
+        for (ResultNMapDto resultNMapDto : resultNMapDtos) {
+            ports.add(resultNMapDto.getPortNumber() + resultNMapDto.getProtocol());
+        }
+        for (ResultHttpxDto resultHttpxDto : resultHttpxDtos) {
+            String tech = resultHttpxDto.getOutput().substring(resultHttpxDto.getOutput().indexOf("[") + 1, resultHttpxDto.getOutput().indexOf("]"));
+            List<String> myList = new ArrayList<>(Arrays.asList(tech.split(",")));
+            technical.addAll(myList);
+        }
+        for (ResultNucleiDto resultNucleiDto : resultNucleiDtos) {
+            vul.add(resultNucleiDto.getOutput());
+        }
+
+        result.put("id", id);
+        result.put("subdomain", subdomainDto.getSubdomainName());
+        result.put("ip", subdomainIpDto.getIp());
+        result.put("port", ports);
+        result.put("technical", technical);
+        result.put("vul", vul);
+
+        return result;
+    }
+
+    @Override
+    public void export(Integer id, HttpServletResponse response) {
+        Map<String, Object> subdomain = getMoreInformation(id);
+        response.setContentType("application/octet-stream");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=subdomain_" + id + ".xlsx";
+        response.setHeader(headerKey, headerValue);
+        ExportExcelSubdomain exportExcelSubdomain = new ExportExcelSubdomain(subdomain);
+        try {
+            exportExcelSubdomain.export(response);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Boolean deleteById(Integer id) {
+        try {
+            SubdomainDto subdomainDto = mapper.toDto(repository.findById(id).orElseThrow());
+            SubdomainIpEntity subdomainIpEntity = subdomainIpRepository.findBySubdomainId(subdomainDto.getId());
+            if (subdomainIpEntity != null){
+                resultNMapRepository.deleteBySubdomainIpId(subdomainIpEntity.getId());
+                resultNucleiRepository.deleteBySubdomainIpId(subdomainIpEntity.getId());
+                resultVulsNMapRepository.deleteBySubdomainIpId(subdomainIpEntity.getId());
+                subdomainIpRepository.deleteBySubdomainId(subdomainDto.getId());
+            }
+            repository.deleteBySubdomainId(id);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

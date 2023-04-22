@@ -113,10 +113,7 @@
                         <div class="row align-items-center">
                             <div class="col-sm-12 col-md-6">
                                 <div class="input-group" style="position: relative;width: 25%;margin-left: auto;margin-bottom: 15px;float: left">
-<!--                                    <select class="form-control js-basic-example2" id="filterType" style="margin-left:-2%;background: #cfcfcf;border-radius: 20px;padding: 10px 20px;" onchange="filter()">-->
-<!--                                        <option value="application" ${filter == 'application' ? 'selected' : ''}><spring:message code="file.media"/></option>-->
-<!--                                        <option value="image" ${filter == 'image' ? 'selected' : ''}><spring:message code="file.file"/></option>-->
-<!--                                    </select>-->
+                                    <a th:if="${infor != null}" href="/subdomain" class="text-black"> <i class="fas fa-arrow-left"></i> Back</a>
                                     <div class="input-group-append" style="position: absolute;right: 0;z-index: 10;">
                                     </div>
                                 </div>
@@ -138,7 +135,7 @@
 <!--                                <i class="fa fa-plus" aria-hidden="true" data-toggle="modal" data-target="#ModalAdd" style="cursor: pointer"></i>-->
                             </div>
                         </div>
-                        <div class="card">
+                        <div class="card" th:if="${result != null}">
                             <div class="card-body table-responsive">
                                 <table id="example" style="text-align: center" class="table">
                                     <tbody>
@@ -146,17 +143,14 @@
                                         <th th:onclick="sortTable(0)" class="cursor-pointer">No</th>
                                         <th th:onclick="sortTable(1)" class="cursor-pointer">ID</th>
                                         <th th:onclick="sortTable(2)" class="cursor-pointer">Name</th>
-                                        <th th:onclick="sortTable(3)" class="cursor-pointer">Domain Name</th>
-                                        <th th:onclick="sortTable(4)" class="cursor-pointer">Created Date</th>
-<!--                                        <th></th>-->
+                                        <th></th>
                                     </tr>
                                     <th:block th:each="item,itemIndex : ${result.content}">
                                         <tr class="to-pointer">
                                             <td th:text="${itemIndex.index+1}"></td>
                                             <td th:text="${item.id}"></td>
                                             <td th:text="${item.subdomainName}"></td>
-                                            <td th:text="${item.domain.domainName}"></td>
-                                            <td th:text="${item.createdDate}"></td>
+                                            <td><a th:href="@{/subdomain/more-information(id=${item.id})}">More Information</a></td>
                                         </tr>
                                     </th:block>
                                     </tbody>
@@ -207,6 +201,45 @@
                                         </button>
                                     </li>
                                 </ul>
+                            </div>
+                        </div>
+                        <div class="card" th:if="${infor != null}">
+                            <div class="card-body table-responsive">
+                                <table id="" style="text-align: center" class="table">
+                                    <tbody>
+                                    <tr>
+                                        <th>Subdomain</th>
+                                        <th>IP</th>
+                                        <th>Port</th>
+                                        <th>Technical</th>
+                                        <th>Vul Scan</th>
+                                        <th>Option</th>
+                                        <th colspan="2">Action</th>
+                                    </tr>
+                                        <tr class="to-pointer">
+                                            <td th:text="${infor.get('subdomain')}"></td>
+                                            <td th:text="${infor.get('ip')}"></td>
+                                            <td>
+                                                <th:block th:each="item : ${infor.get('port')}">
+                                                <span th:text="${item} + ', '"></span>
+                                                </th:block>
+                                            </td>
+                                            <td>
+                                                <th:block th:each="item : ${infor.get('technical')}">
+                                                    <span th:text="${item} + ', '"></span>
+                                                </th:block>
+                                            </td>
+                                            <td style="max-width: 300px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
+                                                <th:block th:each="item : ${infor.get('vul')}">
+                                                    <span th:text="${item}"></span>
+                                                </th:block>
+                                            </td>
+                                            <td>More Information</td>
+                                            <td><a class="text-red" th:href="@{/subdomain/delete(id=${infor.get('id')})}">Delete</a></td>
+                                            <td><a th:href="@{/subdomain/export(id=${infor.get('id')})}">Export</a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>

@@ -146,7 +146,7 @@
                                         <th th:onclick="sortTable(1)" class="cursor-pointer">ID</th>
                                         <th th:onclick="sortTable(2)" class="cursor-pointer">Domain Name</th>
                                         <th th:onclick="sortTable(3)" class="cursor-pointer">Created Date</th>
-<!--                                        <th></th>-->
+                                        <th colspan="2">Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -156,6 +156,8 @@
                                             <td th:text="${item.id}"></td>
                                             <td th:text="${item.domainName}"></td>
                                             <td th:text="${item.createdDate}"></td>
+                                            <td><a class="text-red" th:href="@{/domain/delete(id=${item.id})}">Delete</a></td>
+                                            <td><a th:href="@{/domain/export(id=${item.id})}">Download</a></td>
                                         </tr>
                                     </th:block>
                                     </tbody>
