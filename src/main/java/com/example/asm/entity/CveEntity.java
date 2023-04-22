@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "tbl_cve")
+@Table(name = "cve")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,6 +25,6 @@ public class CveEntity {
     @Column(name = "link")
     private String link;
     @ManyToOne(targetEntity = DomainEntity.class,cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
-    @JoinColumn(name = "domain_id")
+    @JoinColumn(name = "id_domain")
     private DomainEntity domainEntity;
 }

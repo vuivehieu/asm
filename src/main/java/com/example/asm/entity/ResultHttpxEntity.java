@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "tbl_result_httpx")
+@Table(name = "result_httpx")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,6 +17,6 @@ public class ResultHttpxEntity {
     @Column(name = "output")
     private String output;
     @ManyToOne(targetEntity = DomainEntity.class,cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
-    @JoinColumn(name = "domain_id")
+    @JoinColumn(name = "id_domain")
     private DomainEntity domainEntity;
 }
