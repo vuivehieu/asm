@@ -5,6 +5,7 @@ import com.example.asm.entity.DomainEntity;
 import com.example.asm.repository.IDomainRepository;
 import com.example.asm.service.IDomainService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -52,5 +54,10 @@ public class DomainController {
         request.getSession().setAttribute("ref",request.getRequestURI());
         model.addAttribute("searchField", searchField);
         return "index";
+    }
+
+    @GetMapping("/export/excel")
+    public void exportToExcel(HttpServletResponse response, @RequestParam Integer id) {
+        domainService.exportToExcel(id, response);
     }
 }
