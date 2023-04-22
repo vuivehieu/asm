@@ -16,6 +16,8 @@ public interface ISubdomainRepository extends JpaRepository<SubdomainEntity, Int
     @Query(value = "SELECT * FROM subdomains_amass d WHERE d.subdomain_name LIKE %:d% OR " +
             "d.id LIKE %:d%", nativeQuery = true)
     Page<SubdomainEntity> searchAllBy(Pageable pageable, @Param("d") String d);
+    @Query(value = "SELECT * FROM subdomains_amass d WHERE d.id_domain = :d", nativeQuery = true)
+    Page<SubdomainEntity> searchAllByDomainId(Pageable pageable, @Param("d") Integer d);
     @Query(value = "select * from subdomains_amass where id_domain = :id", nativeQuery = true)
     List<SubdomainEntity> getAllByDomainId(@Param("id") Integer id);
     @Modifying

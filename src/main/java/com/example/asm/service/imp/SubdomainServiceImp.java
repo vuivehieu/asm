@@ -54,6 +54,11 @@ public class SubdomainServiceImp implements ISubdomainService {
     }
 
     @Override
+    public Page<SubdomainDto> searchPageByDomainId(Pageable pageable, Integer id) {
+        return this.repository.searchAllByDomainId(pageable, id).map(mapper::toDto);
+    }
+
+    @Override
     public Map<String, Object> getMoreInformation(Integer id) {
         Map<String, Object> result = new HashMap<>();
         SubdomainDto subdomainDto = mapper.toDto(repository.findById(id).orElseThrow());
