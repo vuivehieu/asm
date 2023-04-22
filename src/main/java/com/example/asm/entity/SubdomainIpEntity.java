@@ -6,7 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 @Entity
-@Table(name = "tbl_subdomain_ips")
+@Table(name = "ip_subdomains")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,9 +19,9 @@ public class SubdomainIpEntity {
     @Column(name = "ip")
     private String ip;
     @CreationTimestamp
-    @Column(name = "created_date")
+    @Column(name = "date_created")
     private LocalDateTime createdDate;
     @ManyToOne(targetEntity = SubdomainEntity.class,cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
-    @JoinColumn(name = "subdomain_id")
+    @JoinColumn(name = "id_subdomain")
     private SubdomainEntity subdomain;
 }

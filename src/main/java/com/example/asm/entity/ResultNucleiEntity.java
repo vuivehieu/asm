@@ -3,7 +3,7 @@ package com.example.asm.entity;
 import jakarta.persistence.*;
 import lombok.*;
 @Entity
-@Table(name = "tbl_result_nuclei")
+@Table(name = "result_nuclei")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -13,11 +13,9 @@ public class ResultNucleiEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "vulnerability_name")
-    private String vulnerabilityName;
-    @Column(name = "protocol")
-    private String protocol;
+    @Column(name = "output")
+    private String output;
     @ManyToOne(targetEntity = SubdomainIpEntity.class,cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
-    @JoinColumn(name = "subdomain_ip_id")
+    @JoinColumn(name = "id_ip")
     private SubdomainIpEntity subdomainIp;
 }

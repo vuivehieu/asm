@@ -7,7 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
 @Entity
-@Table(name = "tbl_domain")
+@Table(name = "domain")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,6 +20,6 @@ public class DomainEntity {
     @Column(name = "domain_name")
     private String domainName;
     @CreationTimestamp
-    @Column(name = "created_date")
+    @Column(name = "date_created")
     private LocalDateTime createdDate;
 }

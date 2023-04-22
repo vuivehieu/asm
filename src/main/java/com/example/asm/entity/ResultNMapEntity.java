@@ -6,7 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 @Entity
-@Table(name = "tbl_result_nmap")
+@Table(name = "result_nmap")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,6 +23,6 @@ public class ResultNMapEntity {
     @Column(name = "protocol")
     private String protocol;
     @ManyToOne(targetEntity = SubdomainIpEntity.class,cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
-    @JoinColumn(name = "subdomain_ip_id")
+    @JoinColumn(name = "id_ip")
     private SubdomainIpEntity subdomainIp;
 }
