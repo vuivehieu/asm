@@ -44,6 +44,8 @@ public class SubdomainController {
         if(id.isPresent()){
             resultPage = this.service.searchPageByDomainId(PageRequest.of(pageIndex-1,pageSize,Sort.by("id").descending()),id.get());
         }
+        List<Integer> result = this.service.checkDifferentBetweenScan();
+        model.addAttribute("diffSubdomain", result);
         model.addAttribute("result", resultPage);
         int totalPage = resultPage.getTotalPages();
         if(totalPage>0){

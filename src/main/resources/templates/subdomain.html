@@ -146,7 +146,13 @@
                                         <th></th>
                                     </tr>
                                     <th:block th:each="item,itemIndex : ${result.content}">
-                                        <tr class="to-pointer">
+                                        <tr class="to-pointer bg-blue text-white" th:if="${diffSubdomain.contains(item.id)}">
+                                            <td th:text="${itemIndex.index+1}"></td>
+                                            <td th:text="${item.id}"></td>
+                                            <td th:text="${item.subdomainName}"></td>
+                                            <td><a th:href="@{/subdomain/more-information(id=${item.id})}" class="text-white">More Information</a></td>
+                                        </tr>
+                                        <tr class="to-pointer" th:unless="${diffSubdomain.contains(item.id)}">
                                             <td th:text="${itemIndex.index+1}"></td>
                                             <td th:text="${item.id}"></td>
                                             <td th:text="${item.subdomainName}"></td>
@@ -234,9 +240,9 @@
                                                     <span th:text="${item}"></span>
                                                 </th:block>
                                             </td>
-                                            <td>More Information</td>
-                                            <td><a class="text-red" th:href="@{/subdomain/delete(id=${infor.get('id')})}">Delete</a></td>
-                                            <td><a th:href="@{/subdomain/export(id=${infor.get('id')})}">Export</a></td>
+                                            <td><a th:href="@{/chart/{id}(id=${infor.get('domainId')})}">More Information</a></td>
+                                            <td><a class="text-red" th:href="@{/subdomain/delete(id=${infor.get('subdomainId')})}">Delete</a></td>
+                                            <td><a th:href="@{/subdomain/export(id=${infor.get('subdomainId')})}">Export</a></td>
                                         </tr>
                                     </tbody>
                                 </table>
