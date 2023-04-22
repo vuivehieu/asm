@@ -121,14 +121,14 @@
                                 </div>
                             </div>
                             <div class="col-sm-12 col-md-6">
-                                <div class="input-group" style="position: relative;width: 75%;margin-left: auto;margin-bottom: 15px;">
-                                    <input class="form-control" id="textSearch" value="" type="text" placeholder="Search for domain" style="margin-left:-2%;background: #cfcfcf;border-radius: 20px;padding: 10px 20px;">
-                                    <div class="input-group-append" style="position: absolute;right: 0;z-index: 10;">
-                                        <button class="btn btn-secondary"  type="button" th:onclick="|handleSearch()|">
-                                            <i class="fa fa-search"></i>
-                                        </button>
-                                    </div>
-                                </div>
+<!--                                <div class="input-group" style="position: relative;width: 75%;margin-left: auto;margin-bottom: 15px;">-->
+<!--                                    <input class="form-control" id="textSearch" value="" type="text" placeholder="Search for domain" style="margin-left:-2%;background: #cfcfcf;border-radius: 20px;padding: 10px 20px;">-->
+<!--                                    <div class="input-group-append" style="position: absolute;right: 0;z-index: 10;">-->
+<!--                                        <button class="btn btn-secondary"  type="button" th:onclick="|handleSearch()|">-->
+<!--                                            <i class="fa fa-search"></i>-->
+<!--                                        </button>-->
+<!--                                    </div>-->
+<!--                                </div>-->
                             </div>
                         </div>
                         <div class="card-header" style="background: #242939 ;display: flex;justify-content: space-between;">
@@ -138,10 +138,10 @@
                             </div>
                         </div>
 <!--                        Chart-->
-                        <div>
+                        <div style="margin: 3rem; display: flex; justify-content: center;">
                             <canvas id="myChart"></canvas>
                         </div>
-                        <div>
+                        <div style="text-align: center;">
                             <h3>Chart. List CVE of Subdomain</h3>
                         </div>
 
@@ -156,8 +156,21 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script>
+<script th:inline="javascript">
     const ctx = document.getElementById('myChart');
+
+    let cvesNoRick = [[${cvesNoRick}]]
+    let cvesLow = [[${cvesLow}]]
+    let cvesMedium = [[${cvesMedium}]]
+    let cvesHigh = [[${cvesHigh}]]
+    let cvesCritical = [[${cvesCritical}]]
+    let cves = [[${cves}]]
+
+    // console.log("cvesNoRick", cvesNoRick);
+    // console.log("cvesLow", cvesLow);
+    // console.log("cvesHigh", cvesHigh);
+    // console.log("cvesCritical", cvesCritical);
+
 
     new Chart(ctx, {
         type: "bar",
@@ -165,8 +178,8 @@
             labels: ["Critical Rick", "High Rick", "Medium Rick", "Low Rick", "No Rick"],
             datasets: [
                 {
-                    label: "",
-                    data: [6, 59, 80, 81, 56],
+                    label: "Hidden Chart",
+                    data: [cvesCritical.length, cvesHigh.length, cvesMedium.length, cvesLow.length, cvesNoRick.length],
                     borderWidth: 1,
                     backgroundColor: [
                         "rgba(255, 99, 132, 0.2)",
@@ -189,6 +202,15 @@
             scales: {
                 y: {
                     beginAtZero: true
+                }
+            },
+            onClick: function(event, elements) {
+                if (elements.length > 0) {
+                    // Lấy chỉ số của cột được click
+                    var index = elements[0].index;
+                    console.log("index", index)
+                    // Chuyển hướng sang đường link tương ứng
+                    window.location.href = window.location.protocol + "//" + window.location.host + "/cve/" + window.location.href.split("/")[4] + "?chartColumn=" + index;
                 }
             }
         }

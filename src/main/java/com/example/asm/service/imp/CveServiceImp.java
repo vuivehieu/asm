@@ -2,6 +2,7 @@ package com.example.asm.service.imp;
 
 import com.example.asm.dto.CveDto;
 import com.example.asm.dto.ResultVulsNMapDto;
+import com.example.asm.entity.CveEntity;
 import com.example.asm.mapper.CveMapper;
 import com.example.asm.repository.ICveRepository;
 import com.example.asm.service.ICveService;
@@ -39,5 +40,88 @@ public class CveServiceImp implements ICveService {
     @Override
     public List<CveDto> findAll() {
        return cveRepository.findAll().stream().map(x -> cveMapper.toDto(x)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CveDto> findAllByDomainId(int domainId) {
+        return cveRepository.findAllByDomainId(domainId).stream().map(x -> cveMapper.toDto(x)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CveDto> findAllByDomainIdAndCvssPointIsNull(int domainId) {
+        return cveRepository.findAllByDomainIdAndCvssPointIsNull(domainId).stream().map(x -> cveMapper.toDto(x)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CveDto> findAllByDomainIdAndCvssPointLow(int domainId) {
+        return cveRepository.findAllByDomainIdAndCvssPointLow(domainId).stream().map(x -> cveMapper.toDto(x)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CveDto> findAllByDomainIdAndCvssPointMedium(int domainId) {
+        return cveRepository.findAllByDomainIdAndCvssPointMedium(domainId).stream().map(x -> cveMapper.toDto(x)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CveDto> findAllByDomainIdAndCvssPointHigh(int domainId) {
+        return cveRepository.findAllByDomainIdAndCvssPointHigh(domainId).stream().map(x -> cveMapper.toDto(x)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CveDto> findAllByDomainIdAndCvssPointCritical(int domainId) {
+        return cveRepository.findAllByDomainIdAndCvssPointCritical(domainId).stream().map(x -> cveMapper.toDto(x)).collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<CveDto> findAllByDomainIdAndCvssPointLowPage(Pageable pageable, int domainId) {
+        return cveRepository.findAllByDomainIdAndCvssPointLowPage(pageable, domainId).map(cve -> cveMapper.toDto(cve));
+    }
+
+    @Override
+    public Page<CveDto> findAllByDomainIdAndCvssPointMediumPage(Pageable pageable, int domainId) {
+        return cveRepository.findAllByDomainIdAndCvssPointMediumPage(pageable, domainId).map(cve -> cveMapper.toDto(cve));
+    }
+
+    @Override
+    public Page<CveDto> findAllByDomainIdAndCvssPointHighPage(Pageable pageable, int domainId) {
+        return cveRepository.findAllByDomainIdAndCvssPointHighPage(pageable, domainId).map(cve -> cveMapper.toDto(cve));
+    }
+
+    @Override
+    public Page<CveDto> findAllByDomainIdAndCvssPointCriticalPage(Pageable pageable, int domainId) {
+        return cveRepository.findAllByDomainIdAndCvssPointCriticalPage(pageable, domainId).map(cve -> cveMapper.toDto(cve));
+    }
+
+    @Override
+    public Page<CveDto> findAllByDomainIdAndCvssPointIsNullPage(Pageable pageable, int domainId) {
+        return cveRepository.findAllByDomainIdAndCvssPointIsNullPage(pageable, domainId).map(cve -> cveMapper.toDto(cve));
+    }
+
+
+
+
+    @Override
+    public Page<CveDto> searchAllByDomainIdAndCvssPointLowPage(Pageable pageable, int domainId, String search) {
+        return cveRepository.searchAllByDomainIdAndCvssPointLowPage(pageable, domainId, search).map(cve -> cveMapper.toDto(cve));
+    }
+
+    @Override
+    public Page<CveDto> searchAllByDomainIdAndCvssPointMediumPage(Pageable pageable, int domainId, String search) {
+        return cveRepository.searchAllByDomainIdAndCvssPointMediumPage(pageable, domainId, search).map(cve -> cveMapper.toDto(cve));
+    }
+
+    @Override
+    public Page<CveDto> searchAllByDomainIdAndCvssPointHighPage(Pageable pageable, int domainId, String search) {
+        return cveRepository.searchAllByDomainIdAndCvssPointHighPage(pageable, domainId, search).map(cve -> cveMapper.toDto(cve));
+    }
+
+    @Override
+    public Page<CveDto> searchAllByDomainIdAndCvssPointCriticalPage(Pageable pageable, int domainId, String search) {
+        return cveRepository.searchAllByDomainIdAndCvssPointCriticalPage(pageable, domainId, search).map(cve -> cveMapper.toDto(cve));
+    }
+
+    @Override
+    public Page<CveDto> searchAllByDomainIdAndCvssPointIsNullPage(Pageable pageable, int domainId, String search) {
+        return cveRepository.searchAllByDomainIdAndCvssPointIsNullPage(pageable, domainId, search).map(cve -> cveMapper.toDto(cve));
     }
 }

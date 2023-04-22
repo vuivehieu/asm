@@ -25,72 +25,38 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Controller
-@RestController
 @RequestMapping(value = "chart")
+
 public class ChartController {
     @Autowired
     ICveService service;
-//    @GetMapping
-//    public String findAllCve(Model model,
-//                                @RequestParam("page") Optional<Integer> page,
-//                                @RequestParam("size") Optional<Integer> size,
-//                                @RequestParam("search") Optional<String> search,
-//                                HttpServletRequest request){
-//        int pageIndex = page.orElse(1);
-//        int pageSize = size.orElse(5);
-//        String searchField = search.orElse(null);
-//        Page<CveDto> cvePage = this.service.findAllPage(PageRequest.of(pageIndex-1,pageSize, Sort.by("id").descending()));
-//        if(searchField!=null){
-//            searchField = URLDecoder.decode(searchField);
-//            cvePage = this.service.searchPage(PageRequest.of(pageIndex-1,pageSize,Sort.by("id").descending()),searchField);
-//        }
-//        model.addAttribute("cves", cvePage);
-//        int totalPage = cvePage.getTotalPages();
-//        if(totalPage>0){
-//            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPage)
-//                    .boxed()
-//                    .collect(Collectors.toList());
-//            model.addAttribute("pageNumbers", pageNumbers);
-//            model.addAttribute("curPage", pageIndex);
-//        }
-//        request.getSession().setAttribute("ref",request.getRequestURI());
-//        model.addAttribute("searchField", searchField);
-//        return "chart";
-//    }
 
 //    @GetMapping(value = "{id}")
-//    public String findAllCveByDomainId(Model model,
-//                                @PathVariable("id") int id,
-//                             @RequestParam("page") Optional<Integer> page,
-//                             @RequestParam("size") Optional<Integer> size,
-//                             @RequestParam("search") Optional<String> search,
-//                             HttpServletRequest request){
-//        int pageIndex = page.orElse(1);
-//        int pageSize = size.orElse(5);
-//        String searchField = search.orElse(null);
-//        Page<CveDto> cvePage = this.service.findAllPageByDomainId(PageRequest.of(pageIndex-1,pageSize, Sort.by("id").descending()), id);
-//        if(searchField!=null){
-//            searchField = URLDecoder.decode(searchField);
-//            cvePage = this.service.searchPage(PageRequest.of(pageIndex-1,pageSize,Sort.by("id").descending()),searchField);
-//        }
-//        model.addAttribute("cves", cvePage);
-//        int totalPage = cvePage.getTotalPages();
-//        if(totalPage>0){
-//            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPage)
-//                    .boxed()
-//                    .collect(Collectors.toList());
-//            model.addAttribute("pageNumbers", pageNumbers);
-//            model.addAttribute("curPage", pageIndex);
-//        }
-//        request.getSession().setAttribute("ref",request.getRequestURI());
-//        model.addAttribute("searchField", searchField);
-//        return "chart";
+//    public List<CveDto> findAllCveByDomainId(Model model,
+//                                @PathVariable("id") int idDomain){
+//        List<CveDto> cveDtos = service.findAllByDomainId(idDomain);
+//        return cveDtos;
 //    }
 
-    @GetMapping(value = "")
-    public String showChart(){
+    @GetMapping("{id}")
+    public String findAllCveByDomainId(Model model, @PathVariable("id") int idDomain){
+        List<CveDto> cves = this.service.findAllByDomainId(idDomain);
+
+        List<CveDto> cvesNoRick= this.service.findAllByDomainIdAndCvssPointIsNull(idDomain);
+        List<CveDto> cvesLow = this.service.findAllByDomainIdAndCvssPointLow(idDomain);
+        List<CveDto> cvesMedium = this.service.findAllByDomainIdAndCvssPointMedium(idDomain);
+        List<CveDto> cvesHigh = this.service.findAllByDomainIdAndCvssPointHigh(idDomain);
+        List<CveDto> cvesCritical = this.service.findAllByDomainIdAndCvssPointCritical(idDomain);
+
+        model.addAttribute("cvesNoRick", cvesNoRick);
+        model.addAttribute("cvesLow", cvesLow);
+        model.addAttribute("cvesMedium", cvesMedium);
+        model.addAttribute("cvesHigh", cvesHigh);
+        model.addAttribute("cvesCritical", cvesCritical);
+        model.addAttribute("cves", cves);
         return "chart";
     }
+
 
     @GetMapping("/export/excel")
     public void exportToExcel(HttpServletResponse response, Pageable pageable) throws IOException {
