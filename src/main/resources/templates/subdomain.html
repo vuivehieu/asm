@@ -16,70 +16,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <title>ASM</title>
-    <script language="javascript" type="text/javascript">
-        function sortTable(n) {
-            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-            table = document.getElementById("example");
-            switching = true;
-            //Set the sorting direction to ascending:
-            dir = "asc";
-            /*Make a loop that will continue until
-            no switching has been done:*/
-            while (switching) {
-                //start by saying: no switching is done:
-                switching = false;
-                rows = table.rows;
-                /*Loop through all table rows (except the
-                first, which contains table headers):*/
-                for (i = 1; i < (rows.length - 1); i++) {
-                    //start by saying there should be no switching:
-                    shouldSwitch = false;
-                    /*Get the two elements you want to compare,
-                    one from current row and one from the next:*/
-                    x = rows[i].getElementsByTagName("TD")[n];
-                    y = rows[i + 1].getElementsByTagName("TD")[n];
-                    /*check if the two rows should switch place,
-                    based on the direction, asc or desc:*/
-                    if (dir == "asc") {
-                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                            //if so, mark as a switch and break the loop:
-                            shouldSwitch = true;
-                            break;
-                        }
-                    } else if (dir == "desc") {
-                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-                            //if so, mark as a switch and break the loop:
-                            shouldSwitch = true;
-                            break;
-                        }
-                    }
-                }
-                if (shouldSwitch) {
-                    /*If a switch has been marked, make the switch
-                    and mark that a switch has been done:*/
-                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                    switching = true;
-                    //Each time a switch is done, increase this count by 1:
-                    switchcount++;
-                } else {
-                    /*If no switching has been done AND the direction is "asc",
-                    set the direction to "desc" and run the while loop again.*/
-                    if (switchcount == 0 && dir == "asc") {
-                        dir = "desc";
-                        switching = true;
-                    }
-                }
-            }
-        }
-        // $('#example').DataTable( {
-        //     "paging":   false,
-        //     "ordering": true,
-        //     "info":     false,
-        //
-        //     searching: false
-        // } );
-    </script>
-
 </head>
 <body>
 <!-- Navigation -->
@@ -118,15 +54,15 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-12 col-md-6">
-                                <div class="input-group" style="position: relative;width: 75%;margin-left: auto;margin-bottom: 15px;">
-                                    <input class="form-control" id="textSearch" value="" type="text" placeholder="Search for result" style="margin-left:-2%;background: #cfcfcf;border-radius: 20px;padding: 10px 20px;">
+                            <div class="col-sm-12 col-md-6" th:if="${result != null}">
+                                <form th:action="@{/subdomain}" method="get" class="input-group" style="position: relative;width: 75%;margin-left: auto;margin-bottom: 15px;">
+                                    <input class="form-control" id="textSearch" name="search" th:value="${searchField}" type="text" placeholder="Search for domain" style="margin-left:-2%;background: #cfcfcf;border-radius: 20px;padding: 10px 20px;">
                                     <div class="input-group-append" style="position: absolute;right: 0;z-index: 10;">
-                                        <button class="btn btn-secondary"  type="button" th:onclick="|handleSearch()|">
+                                        <button class="btn btn-secondary"  type="submit">
                                             <i class="fa fa-search"></i>
                                         </button>
                                     </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
                         <div class="card-header" style="background: #242939 ;display: flex;justify-content: space-between;">
@@ -137,17 +73,25 @@
                         </div>
                         <div class="card" th:if="${result != null}">
                             <div class="card-body table-responsive">
-                                <table id="example" style="text-align: center" class="table">
+                                <table id="dataTable" style="text-align: center" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th class="cursor-pointer sort-handler" style="width: 10%">No</th>
+                                            <th class="cursor-pointer sort-handler" style="width: 15%">ID</th>
+                                            <th class="cursor-pointer sort-handler" style="width: 50%">Name</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
                                     <tbody>
-                                    <tr>
-                                        <th th:onclick="sortTable(0)" class="cursor-pointer">No</th>
-                                        <th th:onclick="sortTable(1)" class="cursor-pointer">ID</th>
-                                        <th th:onclick="sortTable(2)" class="cursor-pointer">Name</th>
-                                        <th></th>
-                                    </tr>
                                     <th:block th:each="item,itemIndex : ${result.content}">
-                                        <tr class="to-pointer">
-                                            <td th:text="${itemIndex.index+1}"></td>
+                                        <tr class="to-pointer bg-blue text-white" th:if="${diffSubdomain.contains(item.id)}">
+                                            <td th:text="${result.number * result.size + itemIndex.index + 1}"></td>
+                                            <td th:text="${item.id}"></td>
+                                            <td th:text="${item.subdomainName}"></td>
+                                            <td><a th:href="@{/subdomain/more-information(id=${item.id})}" class="text-white">More Information</a></td>
+                                        </tr>
+                                        <tr class="to-pointer" th:unless="${diffSubdomain.contains(item.id)}">
+                                            <td th:text="${result.number * result.size + itemIndex.index + 1}"></td>
                                             <td th:text="${item.id}"></td>
                                             <td th:text="${item.subdomainName}"></td>
                                             <td><a th:href="@{/subdomain/more-information(id=${item.id})}">More Information</a></td>
@@ -156,11 +100,11 @@
                                     </tbody>
                                 </table>
                                 <ul class="pagination justify-content-center font-weight-bold" th:if="${result.totalPages > 0}">
-                                    <li class="page-item">
+                                    <li class="page-item" th:if="${result.number + 1 > 1}">
                                         <button class="page-link" th:onclick="|handlePage(1)|"><i class="material-icons ">keyboard_double_arrow_left</i>
                                         </button>
                                     </li>
-                                    <li class="page-item">
+                                    <li class="page-item" th:if="${result.number + 1 > 1}">
                                         <button class="page-link" th:onclick="|handlePage(${result.number < 1 ? 1 : result.number})|"><i class="material-icons ">keyboard_arrow_left</i>
                                         </button>
                                     </li>
@@ -192,11 +136,11 @@
                                         <button class="page-link page-number" th:onclick="|handlePage(${i})|"
                                                 th:text="${i}"></button>
                                     </li>
-                                    <li class="page-item">
+                                    <li class="page-item" th:if="${result.number < result.totalPages - 1}">
                                         <button class="page-link" th:onclick="|handlePage(${result.number +2 > result.totalPages ? result.totalPages :result.number +2 })|"><i class="material-icons">keyboard_arrow_right</i>
                                         </button>
                                     </li>
-                                    <li class="page-item">
+                                    <li class="page-item" th:if="${result.number < result.totalPages - 1}">
                                         <button class="page-link" th:onclick="|handlePage(${result.totalPages})|"><i class="material-icons">keyboard_double_arrow_right</i>
                                         </button>
                                     </li>
@@ -206,16 +150,18 @@
                         <div class="card" th:if="${infor != null}">
                             <div class="card-body table-responsive">
                                 <table id="" style="text-align: center" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Subdomain</th>
+                                            <th>IP</th>
+                                            <th>Port</th>
+                                            <th>Technical</th>
+                                            <th>Vul Scan</th>
+                                            <th>Option</th>
+                                            <th colspan="2">Action</th>
+                                        </tr>
+                                    </thead>
                                     <tbody>
-                                    <tr>
-                                        <th>Subdomain</th>
-                                        <th>IP</th>
-                                        <th>Port</th>
-                                        <th>Technical</th>
-                                        <th>Vul Scan</th>
-                                        <th>Option</th>
-                                        <th colspan="2">Action</th>
-                                    </tr>
                                         <tr class="to-pointer">
                                             <td th:text="${infor.get('subdomain')}"></td>
                                             <td th:text="${infor.get('ip')}"></td>
@@ -234,9 +180,16 @@
                                                     <span th:text="${item}"></span>
                                                 </th:block>
                                             </td>
-                                            <td>More Information</td>
-                                            <td><a class="text-red" th:href="@{/subdomain/delete(id=${infor.get('id')})}">Delete</a></td>
-                                            <td><a th:href="@{/subdomain/export(id=${infor.get('id')})}">Export</a></td>
+                                            <td><a th:href="@{/chart/{id}(id=${infor.get('domainId')})}">More Information</a></td>
+                                            <td>
+                                                <a th:href="@{/subdomain/delete(id=${infor.get('subdomainId')})}"
+                                                   class="text-red"
+                                                   th:data-confirm-delete="|Are you sure you want to delete?|"
+                                                   onclick="if (!confirm(this.getAttribute('data-confirm-delete'))) return false">
+                                                    Delete
+                                                </a>
+                                            </td>
+                                            <td><a th:href="@{/subdomain/export(id=${infor.get('subdomainId')})}">Export</a></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -251,5 +204,88 @@
         <!-- End::Main header-->
     </div>
 </div>
+<script>
+    let oldText;
+    let currentIndex;
+    $(".sort-handler").click(function (e) {
+        const index = $(this).index();
+        if (index != currentIndex || !currentIndex) {
+            if (oldText) {
+                $($('.sort-handler').get(currentIndex)).html(oldText);
+            }
+            currentIndex = index;
+        }
+        if (!$(this).text().includes(oldText) || !oldText) {
+            oldText = $(this).text();
+        }
+        // if (oldText.include('&#8593;')){
+        //     oldText.replace('&#8593;', '');
+        // } else if (oldText.include('&#8595;')){
+        //     oldText.replace('&#8595;', '');
+        // }
+        $(this).html(oldText + ' &#8593;');
+        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.getElementById("dataTable");
+        switching = true;
+        //Set the sorting direction to ascending:
+        dir = "asc";
+        /*Make a loop that will continue until
+        no switching has been done:*/
+        while (switching) {
+            //start by saying: no switching is done:
+            switching = false;
+            rows = table.rows;
+            /*Loop through all table rows (except the
+            first, which contains table headers):*/
+            for (i = 1; i < (rows.length - 1); i++) {
+                //start by saying there should be no switching:
+                shouldSwitch = false;
+                /*Get the two elements you want to compare,
+                one from current row and one from the next:*/
+                x = rows[i].getElementsByTagName("TD")[index];
+                y = rows[i + 1].getElementsByTagName("TD")[index];
+                /*check if the two rows should switch place,
+                based on the direction, asc or desc:*/
+                if (dir == "asc") {
+                    if (new Intl.Collator().compare(x.innerHTML.toLowerCase(), y.innerHTML.toLowerCase()) == 1) {
+                        //if so, mark as a switch and break the loop:
+                        shouldSwitch = true;
+                        break;
+                    }
+                } else if (dir == "desc") {
+                    if (new Intl.Collator().compare(x.innerHTML.toLowerCase(), y.innerHTML.toLowerCase()) == -1) {
+                        //if so, mark as a switch and break the loop:
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+            }
+            if (shouldSwitch) {
+                /*If a switch has been marked, make the switch
+                and mark that a switch has been done:*/
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                //Each time a switch is done, increase this count by 1:
+                switchcount++;
+            } else {
+                /*If no switching has been done AND the direction is "asc",
+                set the direction to "desc" and run the while loop again.*/
+                if (switchcount == 0 && dir == "asc") {
+                    $(this).html(oldText + ' &#8595;');
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+        }
+    });
+
+    $(window).on('load', function() {
+        let object = document.querySelector(".to-pointer");
+        if (object.classList.contains('bg-blue')){
+            alert("There have been changes since the last scan.");
+        }
+    });
+
+</script>
 </body>
 </html>

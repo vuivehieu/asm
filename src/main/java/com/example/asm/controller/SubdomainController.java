@@ -31,6 +31,7 @@ public class SubdomainController {
                                       @RequestParam("page") Optional<Integer> page,
                                       @RequestParam("size") Optional<Integer> size,
                                       @RequestParam("search") Optional<String> search,
+                                      @RequestParam("id") Optional<Integer> id,
                                       HttpServletRequest request){
         int pageIndex = page.orElse(1);
         int pageSize = size.orElse(5);
@@ -40,6 +41,11 @@ public class SubdomainController {
             searchField = URLDecoder.decode(searchField);
             resultPage = this.service.searchPage(PageRequest.of(pageIndex-1,pageSize,Sort.by("id").descending()),searchField);
         }
+        if(id.isPresent()){
+            resultPage = this.service.searchPageByDomainId(PageRequest.of(pageIndex-1,pageSize,Sort.by("id").descending()),id.get());
+        }
+        List<Integer> result = this.service.checkDifferentBetweenScan();
+        model.addAttribute("diffSubdomain", result);
         model.addAttribute("result", resultPage);
         int totalPage = resultPage.getTotalPages();
         if(totalPage>0){

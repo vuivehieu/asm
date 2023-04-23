@@ -1,6 +1,7 @@
 package com.example.asm.service.imp;
 
 import com.example.asm.dto.*;
+import com.example.asm.entity.DomainEntity;
 import com.example.asm.entity.SubdomainIpEntity;
 import com.example.asm.mapper.*;
 import com.example.asm.repository.*;
@@ -9,7 +10,9 @@ import com.example.asm.service.ISubdomainService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +35,8 @@ public class SubdomainServiceImp implements ISubdomainService {
     IResultNucleiRepository resultNucleiRepository;
     @Autowired
     IResultVulsNMapRepository resultVulsNMapRepository;
+    @Autowired
+    IDomainRepository domainRepository;
 
     @Autowired
     SubdomainMapper mapper;
@@ -51,6 +56,29 @@ public class SubdomainServiceImp implements ISubdomainService {
     @Override
     public Page<SubdomainDto> searchPage(Pageable pageable, String search) {
         return this.repository.searchAllBy(pageable,search).map(mapper::toDto);
+    }
+
+    @Override
+    public Page<SubdomainDto> searchPageByDomainId(Pageable pageable, Integer id) {
+        return this.repository.searchAllByDomainId(pageable, id).map(mapper::toDto);
+    }
+
+    public List<Integer> checkDifferentBetweenScan(){
+        List<Integer> idList = new ArrayList<>();
+        List<DomainEntity> lastTwoDomain = domainRepository.getLastTwoDomain();
+        List<SubdomainDto> lastScanDomain = repository.getAllByDomainId(lastTwoDomain.get(0).getId()).stream().map(x -> mapper.toDto(x)).toList();
+        List<SubdomainDto> beforeLastScanDomain = repository.getAllByDomainId(lastTwoDomain.get(1).getId()).stream().map(x -> mapper.toDto(x)).toList();
+        List<String> subdomainName = beforeLastScanDomain.stream().map(SubdomainDto::getSubdomainName).collect(Collectors.toList());
+        if (lastScanDomain.size() != beforeLastScanDomain.size()){
+            idList = lastScanDomain.stream().map(SubdomainDto::getId).collect(Collectors.toList());
+            return idList;
+        }
+        for (SubdomainDto subdomainDto : lastScanDomain) {
+            if (!subdomainName.contains(subdomainDto.getSubdomainName())){
+                idList.add(subdomainDto.getId());
+            }
+        }
+        return idList;
     }
 
     @Override
@@ -77,7 +105,8 @@ public class SubdomainServiceImp implements ISubdomainService {
             vul.add(resultNucleiDto.getOutput());
         }
 
-        result.put("id", id);
+        result.put("domainId", subdomainDto.getDomain().getId());
+        result.put("subdomainId", id);
         result.put("subdomain", subdomainDto.getSubdomainName());
         result.put("ip", subdomainIpDto.getIp());
         result.put("port", ports);
