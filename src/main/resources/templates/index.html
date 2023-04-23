@@ -93,18 +93,25 @@
                                             <td><a class="text-black" th:href="@{/subdomain(id=${item.id})}" th:text="${item.id}"></a></td>
                                             <td th:text="${item.domainName}"></td>
                                             <td th:text="${item.createdDate}"></td>
-                                            <td><a class="text-red" th:href="@{/domain/delete(id=${item.id})}">Delete</a></td>
+                                            <td>
+                                                <a th:href="@{/domain/delete(id=${item.id})}"
+                                                    class="text-red"
+                                                    th:data-confirm-delete="|Are you sure you want to delete?|"
+                                                    onclick="if (!confirm(this.getAttribute('data-confirm-delete'))) return false">
+                                                    Delete
+                                                </a>
+                                            </td>
                                             <td><a th:href="@{/domain/export(id=${item.id})}">Download</a></td>
                                         </tr>
                                     </th:block>
                                     </tbody>
                                 </table>
                                 <ul class="pagination justify-content-center font-weight-bold pt-2" th:if="${domains.totalPages > 0}">
-                                    <li class="page-item">
+                                    <li class="page-item" th:if="${domains.number + 1 > 1}">
                                         <button class="page-link" th:onclick="|handlePage(1)|"><i class="material-icons ">keyboard_double_arrow_left</i>
                                         </button>
                                     </li>
-                                    <li class="page-item">
+                                    <li class="page-item" th:if="${domains.number + 1 > 1}">
                                         <button class="page-link" th:onclick="|handlePage(${domains.number < 1 ? 1 : domains.number})|"><i class="material-icons ">keyboard_arrow_left</i>
                                         </button>
                                     </li>
@@ -136,11 +143,11 @@
                                         <button class="page-link page-number" th:onclick="|handlePage(${i})|"
                                                 th:text="${i}"></button>
                                     </li>
-                                    <li class="page-item">
+                                    <li class="page-item" th:if="${domains.number < domains.totalPages - 1}">
                                         <button class="page-link" th:onclick="|handlePage(${domains.number +2 > domains.totalPages ? domains.totalPages :domains.number +2 })|"><i class="material-icons">keyboard_arrow_right</i>
                                         </button>
                                     </li>
-                                    <li class="page-item">
+                                    <li class="page-item" th:if="${domains.number < domains.totalPages - 1}">
                                         <button class="page-link" th:onclick="|handlePage(${domains.totalPages})|"><i class="material-icons">keyboard_double_arrow_right</i>
                                         </button>
                                     </li>

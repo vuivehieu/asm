@@ -97,11 +97,11 @@
                                     </tbody>
                                 </table>
                                 <ul class="pagination justify-content-center font-weight-bold" th:if="${result.totalPages > 0}">
-                                    <li class="page-item">
+                                    <li class="page-item" th:if="${result.number + 1 > 1}">
                                         <button class="page-link" th:onclick="|handlePage(1)|"><i class="material-icons ">keyboard_double_arrow_left</i>
                                         </button>
                                     </li>
-                                    <li class="page-item">
+                                    <li class="page-item" th:if="${result.number + 1 > 1}">
                                         <button class="page-link" th:onclick="|handlePage(${result.number < 1 ? 1 : result.number})|"><i class="material-icons ">keyboard_arrow_left</i>
                                         </button>
                                     </li>
@@ -133,11 +133,11 @@
                                         <button class="page-link page-number" th:onclick="|handlePage(${i})|"
                                                 th:text="${i}"></button>
                                     </li>
-                                    <li class="page-item">
+                                    <li class="page-item" th:if="${result.number < result.totalPages - 1}">
                                         <button class="page-link" th:onclick="|handlePage(${result.number +2 > result.totalPages ? result.totalPages :result.number +2 })|"><i class="material-icons">keyboard_arrow_right</i>
                                         </button>
                                     </li>
-                                    <li class="page-item">
+                                    <li class="page-item" th:if="${result.number < result.totalPages - 1}">
                                         <button class="page-link" th:onclick="|handlePage(${result.totalPages})|"><i class="material-icons">keyboard_double_arrow_right</i>
                                         </button>
                                     </li>
