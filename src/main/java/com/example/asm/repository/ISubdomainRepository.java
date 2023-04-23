@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface ISubdomainRepository extends JpaRepository<SubdomainEntity, Integer> {
     @Query(value = "SELECT * FROM subdomains_amass d WHERE d.subdomain_name LIKE %:d% OR " +
-            "d.id LIKE %:d%", nativeQuery = true)
+            "d.id LIKE %:d% OR d.date_created LIKE %:d% ", nativeQuery = true)
     Page<SubdomainEntity> searchAllBy(Pageable pageable, @Param("d") String d);
     @Query(value = "SELECT * FROM subdomains_amass d WHERE d.id_domain = :d", nativeQuery = true)
     Page<SubdomainEntity> searchAllByDomainId(Pageable pageable, @Param("d") Integer d);

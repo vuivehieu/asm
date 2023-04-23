@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface IDomainRepository extends JpaRepository<DomainEntity, Integer> {
-    @Query("SELECT d FROM DomainEntity d WHERE d.domainName LIKE %:d%")
+    @Query(value = "SELECT * FROM domain WHERE domain_name LIKE %:d% OR id LIKE %:d% OR date_created LIKE %:d%", nativeQuery = true)
     Page<DomainEntity> searchAllBy(Pageable pageable, @Param("d") String d);
     @Modifying
     @Query(value = "delete from DomainEntity d where d.id= :id")

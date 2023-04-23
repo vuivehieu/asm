@@ -1,8 +1,6 @@
 package com.example.asm.controller;
 
 import com.example.asm.dto.DomainDto;
-import com.example.asm.entity.DomainEntity;
-import com.example.asm.repository.IDomainRepository;
 import com.example.asm.service.IDomainService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,10 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -32,15 +30,15 @@ public class DomainController {
     public String findAllDomain(Model model,
                               @RequestParam("page") Optional<Integer> page,
                               @RequestParam("size") Optional<Integer> size,
-                              @RequestParam("search") Optional<String> search,
+                              @Param("search") Optional<String> search,
                               HttpServletRequest request){
         int pageIndex = page.orElse(1);
         int pageSize = size.orElse(5);
         String searchField = search.orElse(null);
-        Page<DomainDto> domainPage = this.domainService.findAllPage(PageRequest.of(pageIndex-1,pageSize, Sort.by("createdDate").descending()));
+        Page<DomainDto> domainPage = this.domainService.findAllPage(PageRequest.of(pageIndex-1,pageSize, Sort.by("id").descending()));
         if(searchField!=null){
             searchField = URLDecoder.decode(searchField);
-            domainPage = this.domainService.searchPage(PageRequest.of(pageIndex-1,pageSize,Sort.by("createdDate").descending()),searchField);
+            domainPage = this.domainService.searchPage(PageRequest.of(pageIndex-1,pageSize,Sort.by("id").descending()),searchField);
         }
         model.addAttribute("domains", domainPage);
         int totalPage = domainPage.getTotalPages();

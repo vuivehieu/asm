@@ -11,10 +11,11 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface  IResultNMapRepository extends JpaRepository<ResultNMapEntity, Integer> {
-    @Query(value = "SELECT * FROM result_nmap d WHERE d.status LIKE %:d% OR " +
+    @Query(value = "SELECT d FROM ResultNMapEntity d WHERE d.status LIKE %:d% OR " +
             "d.protocol LIKE %:d% or " +
-            "d.port_number LIKE %:d% or " +
-            "d.id LIKE %:d%", nativeQuery = true)
+            "CAST( d.portNumber AS string ) LIKE %:d% or " +
+            "CAST( d.id AS string ) LIKE %:d% or " +
+            "d.subdomainIp.ip LIKE %:d%")
     Page<ResultNMapEntity> searchAllBy(Pageable pageable, @Param("d") String d);
 
     @Query(value = "SELECT * FROM result_nmap d WHERE d.id_ip like %:id%", nativeQuery = true)

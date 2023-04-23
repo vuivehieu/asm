@@ -16,69 +16,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <title>ASM</title>
-    <script language="javascript" type="text/javascript">
-        function sortTable(n) {
-            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-            table = document.getElementById("example");
-            switching = true;
-            //Set the sorting direction to ascending:
-            dir = "asc";
-            /*Make a loop that will continue until
-            no switching has been done:*/
-            while (switching) {
-                //start by saying: no switching is done:
-                switching = false;
-                rows = table.rows;
-                /*Loop through all table rows (except the
-                first, which contains table headers):*/
-                for (i = 1; i < (rows.length - 1); i++) {
-                    //start by saying there should be no switching:
-                    shouldSwitch = false;
-                    /*Get the two elements you want to compare,
-                    one from current row and one from the next:*/
-                    x = rows[i].getElementsByTagName("TD")[n];
-                    y = rows[i + 1].getElementsByTagName("TD")[n];
-                    /*check if the two rows should switch place,
-                    based on the direction, asc or desc:*/
-                    if (dir == "asc") {
-                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                            //if so, mark as a switch and break the loop:
-                            shouldSwitch = true;
-                            break;
-                        }
-                    } else if (dir == "desc") {
-                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-                            //if so, mark as a switch and break the loop:
-                            shouldSwitch = true;
-                            break;
-                        }
-                    }
-                }
-                if (shouldSwitch) {
-                    /*If a switch has been marked, make the switch
-                    and mark that a switch has been done:*/
-                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                    switching = true;
-                    //Each time a switch is done, increase this count by 1:
-                    switchcount++;
-                } else {
-                    /*If no switching has been done AND the direction is "asc",
-                    set the direction to "desc" and run the while loop again.*/
-                    if (switchcount == 0 && dir == "asc") {
-                        dir = "desc";
-                        switching = true;
-                    }
-                }
-            }
-        }
-        // $('#example').DataTable( {
-        //     "paging":   false,
-        //     "ordering": true,
-        //     "info":     false,
-        //
-        //     searching: false
-        // } );
-    </script>
 </head>
 <body>
 <!-- Navigation -->
@@ -121,14 +58,14 @@
                                 </div>
                             </div>
                             <div class="col-sm-12 col-md-6">
-                                <div class="input-group" style="position: relative;width: 75%;margin-left: auto;margin-bottom: 15px;">
-                                    <input class="form-control" id="textSearch" value="" type="text" placeholder="Search for result" style="margin-left:-2%;background: #cfcfcf;border-radius: 20px;padding: 10px 20px;">
+                                <form th:action="@{/result-n-map}" method="get" class="input-group" style="position: relative;width: 75%;margin-left: auto;margin-bottom: 15px;">
+                                    <input class="form-control" id="textSearch" name="search" th:value="${searchField}" type="text" placeholder="Search for domain" style="margin-left:-2%;background: #cfcfcf;border-radius: 20px;padding: 10px 20px;">
                                     <div class="input-group-append" style="position: absolute;right: 0;z-index: 10;">
-                                        <button class="btn btn-secondary"  type="button" th:onclick="|handleSearch()|">
+                                        <button class="btn btn-secondary"  type="submit">
                                             <i class="fa fa-search"></i>
                                         </button>
                                     </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
                         <div class="card-header" style="background: #242939 ;display: flex;justify-content: space-between;">
@@ -139,19 +76,21 @@
                         </div>
                         <div class="card">
                             <div class="card-body table-responsive">
-                                <table id="example" style="text-align: center" class="table">
+                                <table id="dataTable" style="text-align: center" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th class="cursor-pointer sort-handler" style="width: 10%">No</th>
+                                            <th class="cursor-pointer sort-handler" style="width: 15%">ID</th>
+                                            <th class="cursor-pointer sort-handler" style="width: 15%">Port Number</th>
+                                            <th class="cursor-pointer sort-handler" style="width: 20%">Protocol</th>
+                                            <th class="cursor-pointer sort-handler" style="width: 15%">Status</th>
+                                            <th class="cursor-pointer sort-handler" style="width: 25%">Subdomain IP</th>
+                                        </tr>
+                                    </thead>
                                     <tbody>
-                                    <tr>
-                                        <th th:onclick="sortTable(0)" class="cursor-pointer">No</th>
-                                        <th th:onclick="sortTable(1)" class="cursor-pointer">ID</th>
-                                        <th th:onclick="sortTable(2)" class="cursor-pointer">Port Number</th>
-                                        <th th:onclick="sortTable(3)" class="cursor-pointer">Protocol</th>
-                                        <th th:onclick="sortTable(4)" class="cursor-pointer">Status</th>
-                                        <th th:onclick="sortTable(5)" class="cursor-pointer">Subdomain IP</th>
-                                    </tr>
                                     <th:block th:each="item,itemIndex : ${nmaps.content}">
                                         <tr class="to-pointer">
-                                            <td th:text="${itemIndex.index+1}"></td>
+                                            <td th:text="${nmaps.number * nmaps.size + itemIndex.index + 1}"></td>
                                             <td th:text="${item.id}"></td>
                                             <td th:text="${item.portNumber}"></td>
                                             <td th:text="${item.protocol}"></td>
@@ -218,5 +157,81 @@
         <!-- End::Main header-->
     </div>
 </div>
+<script>
+    let oldText;
+    let currentIndex;
+    $(".sort-handler").click(function (e) {
+        const index = $(this).index();
+        if (index != currentIndex || !currentIndex) {
+            if (oldText) {
+                $($('.sort-handler').get(currentIndex)).html(oldText);
+            }
+            currentIndex = index;
+        }
+        if (!$(this).text().includes(oldText) || !oldText) {
+            oldText = $(this).text();
+        }
+        // if (oldText.include('&#8593;')){
+        //     oldText.replace('&#8593;', '');
+        // } else if (oldText.include('&#8595;')){
+        //     oldText.replace('&#8595;', '');
+        // }
+        $(this).html(oldText + ' &#8593;');
+        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.getElementById("dataTable");
+        switching = true;
+        //Set the sorting direction to ascending:
+        dir = "asc";
+        /*Make a loop that will continue until
+        no switching has been done:*/
+        while (switching) {
+            //start by saying: no switching is done:
+            switching = false;
+            rows = table.rows;
+            /*Loop through all table rows (except the
+            first, which contains table headers):*/
+            for (i = 1; i < (rows.length - 1); i++) {
+                //start by saying there should be no switching:
+                shouldSwitch = false;
+                /*Get the two elements you want to compare,
+                one from current row and one from the next:*/
+                x = rows[i].getElementsByTagName("TD")[index];
+                y = rows[i + 1].getElementsByTagName("TD")[index];
+                /*check if the two rows should switch place,
+                based on the direction, asc or desc:*/
+                if (dir == "asc") {
+                    if (new Intl.Collator().compare(x.innerHTML.toLowerCase(), y.innerHTML.toLowerCase()) == 1) {
+                        //if so, mark as a switch and break the loop:
+                        shouldSwitch = true;
+                        break;
+                    }
+                } else if (dir == "desc") {
+                    if (new Intl.Collator().compare(x.innerHTML.toLowerCase(), y.innerHTML.toLowerCase()) == -1) {
+                        //if so, mark as a switch and break the loop:
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+            }
+            if (shouldSwitch) {
+                /*If a switch has been marked, make the switch
+                and mark that a switch has been done:*/
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                //Each time a switch is done, increase this count by 1:
+                switchcount++;
+            } else {
+                /*If no switching has been done AND the direction is "asc",
+                set the direction to "desc" and run the while loop again.*/
+                if (switchcount == 0 && dir == "asc") {
+                    $(this).html(oldText + ' &#8595;');
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+        }
+    });
+
+</script>
 </body>
 </html>

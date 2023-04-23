@@ -14,8 +14,7 @@ public interface ICveRepository extends JpaRepository<CveEntity, Long> {
     @Query(value = "SELECT * FROM cve cve WHERE cve.cve_id LIKE %:d% " +
             "OR cve.cvss_point LIKE %:d% " +
             "OR cve.descriptions LIKE %:d% " +
-            "OR cve.link LIKE %:d% " +
-            "OR cve.web_tech LIKE %:d% ", nativeQuery = true)
+            "OR cve.id LIKE %:d% ", nativeQuery = true)
     Page<CveEntity> searchAllBy(Pageable pageable, @Param("d") String d);
 
     @Query(value = "SELECT * FROM cve WHERE cve.id_domain = :domainId", nativeQuery = true)
