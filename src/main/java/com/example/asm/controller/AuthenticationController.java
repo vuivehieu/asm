@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class AuthenticationController {
@@ -23,12 +24,14 @@ public class AuthenticationController {
     }
 
     @PostMapping(value = "/sign-in")
-    public String showSignInForm(@ModelAttribute UserLoginModel model, HttpSession session){
+    public String showSignInForm(@ModelAttribute UserLoginModel model, HttpSession session, Model tmodel){
         if(userService.login(model.getUsername(), model.getPassword())!=null){
             session.setAttribute("account", model.getUsername());
             return "redirect:domain";
         }else{
-            return "redirect:sign-in";
+            tmodel.addAttribute("errorMessage","Wrong username or password!!!");
+            tmodel.addAttribute("login", new UserLoginModel());
+            return "signin";
         }
     }
     @GetMapping(value = "/sign-up")
@@ -37,11 +40,20 @@ public class AuthenticationController {
         return "signup";
     }
     @PostMapping(value = "/sign-up")
-    public String signUp(@ModelAttribute UserRegisterModel model){
-        if(model.getPassword().equals(model.getRePassword())){
-            this.userService.registerUser(model.getUsername(),model.getPassword());
+    public String signUp(@ModelAttribute UserRegisterModel umodel, Model model, RedirectAttributes attributes){
+        if(umodel.getPassword().equals(umodel.getRePassword())) {
+            if (!this.userService.checkUsername(umodel.getUsername())) {
+                model.addAttribute("errorMessage", "Username already exists.");
+                model.addAttribute("register", new UserRegisterModel());
+                return "signup";
+            }
+            this.userService.registerUser(umodel.getUsername(), umodel.getPassword());
+        }else {
+            model.addAttribute("errorMessage", "Password unmatch!!!");
         }
-        return "redirect:sign-in";
+        model.addAttribute("login", new UserLoginModel());
+        model.addAttribute("successMessage","Register Success");
+        return "signin";
     }
     @GetMapping(value = "/sign-out")
     public String signOut(HttpSession session){

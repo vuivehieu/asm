@@ -18,10 +18,8 @@ public class UserServiceImp implements IUserService {
     PasswordEncoder passwordEncoder;
     @Override
     public void registerUser(String username, String password) {
-        if(this.repository.countAllByUsername(username)==0){
             UserEntity user = new UserEntity(null,username,passwordEncoder.encode(password),0);
             this.repository.save(user);
-        }
     }
 
     @Override
@@ -32,5 +30,10 @@ public class UserServiceImp implements IUserService {
         }else{
             return null;
         }
+    }
+
+    @Override
+    public boolean checkUsername(String username) {
+        return this.repository.countAllByUsername(username)==0;
     }
 }

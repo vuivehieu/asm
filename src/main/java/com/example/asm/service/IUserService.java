@@ -6,4 +6,6 @@ public interface IUserService {
     void registerUser(String username, String password);
 
     UserDto login(String username, String password);
+
+    boolean checkUsername(String username);
 }

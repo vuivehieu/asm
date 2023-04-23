@@ -17,12 +17,18 @@
       <div class="card-body">
         <span class="text-primary text-18 d-block font-weight-bold">ASM</span>
         <span class="mb-md text-muted mb-lg d-block">Sign in to ASM</span>
+        <div th:if="${errorMessage != null}" style="color: red;">
+          <p th:text="${errorMessage}"></p>
+        </div>
+        <div th:if="${successMessage}" style="color: red;">
+          <p th:text="${successMessage}"></p>
+        </div>
         <form action="#" th:action="@{/sign-in}" th:object="${login}" method="post" style="margin-bottom: 100px">
         <div class="input-group  input-light mb-md">
-          <input type="text" class="form-control" th:field="*{username}" placeholder="Username">
+          <input type="text" class="form-control" required th:field="*{username}" placeholder="Username">
         </div>
         <div class="input-group  input-light mb-md">
-          <input type="password" class="form-control" th:field="*{password}" placeholder="Password">
+          <input type="password" class="form-control" required th:field="*{password}" placeholder="Password">
         </div>
           <button type="submit" style="width: 50%" class="btn btn-raised btn-raised-primary btn-block mb-xl">Submit</button>
         </form>

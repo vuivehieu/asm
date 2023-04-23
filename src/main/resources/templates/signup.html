@@ -17,15 +17,18 @@
       <div class="card-body">
         <span class="text-primary text-18 d-block font-weight-bold">ASM</span>
         <span class="mb-md text-muted mb-lg d-block">Create a new account</span>
+        <div th:if="${errorMessage != null}" style="color: red;">
+          <p th:text="${errorMessage}"></p>
+        </div>
         <form action="#" th:action="@{/sign-up}" th:object="${register}" method="post" style="margin-bottom: 100px">
         <div class="input-group  input-light mb-md">
-          <input type="text" class="form-control" th:field="*{username}" placeholder="Username">
+          <input type="text" class="form-control" required th:field="*{username}" placeholder="Username">
         </div>
         <div class="input-group  input-light mb-md">
-          <input type="password" class="form-control" th:field="*{password}" placeholder="Password">
+          <input type="password" class="form-control" required th:field="*{password}" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$" placeholder="Password">
         </div>
         <div class="input-group  input-light mb-md">
-          <input type="password" class="form-control" th:field="*{rePassword}" placeholder="Confirm Password">
+          <input type="password" class="form-control" required th:field="*{rePassword}" placeholder="Confirm Password">
         </div>
           <button type="submit" style="width: 50%" class="btn btn-raised btn-raised-primary btn-block mb-xl">Submit</button>
         </form>
