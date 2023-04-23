@@ -115,7 +115,7 @@
     new Chart(ctx, {
         type: "bar",
         data: {
-            labels: ["Critical Rick", "High Rick", "Medium Rick", "Low Rick", "No Rick"],
+            labels: ["Critical Risk", "High Risk", "Medium Risk", "Low Risk", "No Risk"],
             datasets: [
                 {
                     label: "List CVE of Subdomain",
@@ -125,20 +125,25 @@
                         "rgba(255, 99, 132, 0.2)",
                         "rgba(255, 159, 64, 0.2)",
                         "rgba(255, 205, 86, 0.2)",
-                        "rgba(54, 162, 235, 0.2)",
+                        "rgba(14,253,3,0.2)",
                         "rgba(201, 203, 207, 0.2)"
                     ],
                     borderColor: [
                         "rgb(255, 99, 132)",
                         "rgb(255, 159, 64)",
                         "rgb(255, 205, 86)",
-                        "rgb(54, 162, 235)",
+                        "rgba(6,248,18,0.35)",
                         "rgb(201, 203, 207)"
                     ]
                 }
             ]
         },
         options: {
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
             scales: {
                 y: {
                     beginAtZero: true

@@ -64,21 +64,27 @@ public class SubdomainServiceImp implements ISubdomainService {
     }
 
     public List<Integer> checkDifferentBetweenScan(){
-        List<Integer> idList = new ArrayList<>();
-        List<DomainEntity> lastTwoDomain = domainRepository.getLastTwoDomain();
-        List<SubdomainDto> lastScanDomain = repository.getAllByDomainId(lastTwoDomain.get(0).getId()).stream().map(x -> mapper.toDto(x)).toList();
-        List<SubdomainDto> beforeLastScanDomain = repository.getAllByDomainId(lastTwoDomain.get(1).getId()).stream().map(x -> mapper.toDto(x)).toList();
-        List<String> subdomainName = beforeLastScanDomain.stream().map(SubdomainDto::getSubdomainName).collect(Collectors.toList());
-        if (lastScanDomain.size() != beforeLastScanDomain.size()){
-            idList = lastScanDomain.stream().map(SubdomainDto::getId).collect(Collectors.toList());
-            return idList;
-        }
-        for (SubdomainDto subdomainDto : lastScanDomain) {
-            if (!subdomainName.contains(subdomainDto.getSubdomainName())){
-                idList.add(subdomainDto.getId());
+        try {
+            List<Integer> idList = new ArrayList<>();
+            List<DomainEntity> lastTwoDomain = domainRepository.getLastTwoDomain();
+            List<SubdomainDto> lastScanDomain = repository.getAllByDomainId(lastTwoDomain.get(0).getId()).stream().map(x -> mapper.toDto(x)).toList();
+            List<SubdomainDto> beforeLastScanDomain = repository.getAllByDomainId(lastTwoDomain.get(1).getId()).stream().map(x -> mapper.toDto(x)).toList();
+            List<String> subdomainName = beforeLastScanDomain.stream().map(SubdomainDto::getSubdomainName).collect(Collectors.toList());
+            if (lastScanDomain.size() != beforeLastScanDomain.size()){
+                idList = lastScanDomain.stream().map(SubdomainDto::getId).collect(Collectors.toList());
+                return idList;
             }
+            for (SubdomainDto subdomainDto : lastScanDomain) {
+                if (!subdomainName.contains(subdomainDto.getSubdomainName())){
+                    idList.add(subdomainDto.getId());
+                }
+            }
+            return idList;
+
+        }catch (Exception e){
+            System.out.println(e.getMessage());
         }
-        return idList;
+        return  new ArrayList<>();
     }
 
     @Override
