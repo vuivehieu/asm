@@ -58,76 +58,39 @@
             <div class="row align-items-center">
               <div class="col-sm-12 col-md-6">
                 <div class="input-group" style="position: relative;width: 25%;margin-left: auto;margin-bottom: 15px;float: left">
-                  <div class="nav-pills-primary">
-                    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                      <li class="nav-item">
-                        <a
-                                class="nav-link"
-                                id="pills-home-tab"
-                                data-toggle="pill"
-                                th:href="@{/scan}"
-                                role="tab"
-                                aria-controls="pills-home"
-                                aria-selected="true"
-                        >Scan</a
-                        >
-                      </li>
-                      <li class="nav-item">
-                        <a
-                                class="nav-link active"
-                                id="pills-profile-tab"
-                                data-toggle="pill"
-                                href="#"
-                                role="tab"
-                                aria-controls="pills-profile"
-                                aria-selected="false"
-                        >Setting</a
-                        >
-                      </li>
-                    </ul>
-                  </div>
                   <div class="input-group-append" style="position: absolute;right: 0;z-index: 10;">
                   </div>
                 </div>
               </div>
               <div class="col-sm-12 col-md-6">
-                <div class="input-group" style="position: relative;width: 75%;margin-left: auto;margin-bottom: 15px;">
-                  <input class="form-control" id="textSearch" value="" type="text" placeholder="Search for scan" style="margin-left:-2%;background: #cfcfcf;border-radius: 20px;padding: 10px 20px;">
-                  <div class="input-group-append" style="position: absolute;right: 0;z-index: 10;">
-                    <button class="btn btn-secondary"  type="button" th:onclick="|handleSearch()|">
-                      <i class="fa fa-search"></i>
-                    </button>
-                  </div>
-                </div>
               </div>
             </div>
             <div class="card-header" style="background: #242939 ;display: flex;justify-content: space-between;">
-              <h2 class="p-1 m-0 text-16 font-weight-semi " style="color: white">My Scan</h2>
+              <h2 class="p-1 m-0 text-16 font-weight-semi " style="color: white">Edit Scan</h2>
               <div style="color: white" class="p-1 m-0 text-16">
                 <!--                                <i class="fa fa-plus" aria-hidden="true" data-toggle="modal" data-target="#ModalAdd" style="cursor: pointer"></i>-->
               </div>
             </div>
             <div class="card">
               <div class="card-body">
-                <form id="formScan">
+                <form id="editForm" th:object="${domain}" method="post" action="edit-scan">
                   <div class="form-group col-md-12">
                     <label for="domain" class="ml-2" style="font-size: 15px">Domain</label>
-                    <input type="text" class="form-control mt-2" name="domain" id="domain" required>
+                    <input type="text" class="form-control mt-2" name="domain" th:field="*{domainName}" id="domain" required="required">
+                    <input type="text" class="form-control mt-2" th:field="*{id}" style="display: none">
                   </div>
                   <div class="form-group col-md-12">
-                    <label for="Description" class="ml-2" style="font-size: 15px">Description</label>
-                    <input type="email" class="form-control mt-2" id="Description" name="description" required style="font-size: 14px;">
+                    <label for="startTime" class="ml-2" style="font-size: 15px">Start Time</label>
+                    <input type="datetime-local" class="form-control mt-2" id="startTime" th:field="*{startTime}" disabled name="startTime" required="required" style="font-size: 14px;">
+                  </div>
+                  <div class="form-group col-md-12">
+                    <label for="endTime" class="ml-2" style="font-size: 15px">End Time</label>
+                    <input type="datetime-local" class="form-control mt-2" id="endTime"  th:field="*{endTime}" disabled name="endTime" required="required" style="font-size: 14px;">
                   </div>
                 </form>
                 <div class="row" style="align-items: center">
-                  <div class="col-4">
-                    <button class="btn btn-flat-success mr-3" onclick="submitForm()">Start</button>
-                    <button class="btn btn-flat-light">Cancel</button>
-                  </div>
-                  <div class="col-8">
-<!--                    <button class="bg-info" style="margin-left: 300px">Processing</button>-->
-                    <button id="progressBar" class="bg-light" style="margin-left: 300px;width: 200px;height: 50px">None Select</button>
-                  </div>
+                    <button class="btn btn-flat-success mr-3" onclick="submitForm()">Edit</button>
+                    <button class="btn btn-flat-success mr-3" onclick="onCancel()">Cancel</button>
                 </div>
               </div>
             </div>
@@ -142,26 +105,18 @@
   </div>
 </div>
 <script>
+  function onCancel(){
+    window.location.href='/scan';
+  }
   function submitForm(){
-    var domain= document.getElementsByName("domain")[0];
-    if(domain.value=== ""){
-      domain.reportValidity();
-      return;
+    var form = document.getElementById('editForm');
+    if(confirm("Are you sure want to edit?")){
+      form.submit();
     }
-    var description= document.getElementsByName("description")[0];
-    if(description.value=== ""){
-      description.reportValidity();
-      return;
-    }
-    // var form = document.getElementById('domainForm');
-    callPython(document.getElementById("domain").value);
-    // form.submit();
+    // callPython(document.getElementById("domain").value);
   }
   function callPython(data)
   {
-    $('#progressBar').text("Progressing")
-    $('#progressBar').removeClass("bg-light")
-    $('#progressBar').addClass("bg-info")
     var ws = new WebSocket("ws://localhost:1337/");
 
     ws.onopen = function(){
@@ -176,11 +131,7 @@
       var received_msg = evt.data;
       console.log(received_msg);
     };
-    $('#progressBar').text("Completed")
-    $('#progressBar').removeClass("bg-info")
-    $('#progressBar').addClass("bg-success")
   }
-
 </script>
 </body>
 

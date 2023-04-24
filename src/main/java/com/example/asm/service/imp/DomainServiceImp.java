@@ -4,6 +4,7 @@ import com.example.asm.dto.DomainDto;
 import com.example.asm.dto.ResultHttpxDto;
 import com.example.asm.dto.SubdomainDto;
 import com.example.asm.dto.SubdomainIpDto;
+import com.example.asm.entity.DomainEntity;
 import com.example.asm.entity.SubdomainEntity;
 import com.example.asm.entity.SubdomainIpEntity;
 import com.example.asm.mapper.DomainMapper;
@@ -98,5 +99,17 @@ public class DomainServiceImp implements IDomainService {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    @Override
+    public DomainEntity findById(int id) {
+        return this.domainRepository.findById(id).orElseThrow(()-> new RuntimeException("No Domain found!!!"));
+    }
+
+    @Override
+    public void updateDomain(DomainEntity entity) {
+        DomainEntity oldEntity = this.domainRepository.findById(entity.getId()).orElseThrow(()->new RuntimeException("No Domain Found!!!"));
+        oldEntity.setDomainName(entity.getDomainName());
+        this.domainRepository.save(oldEntity);
     }
 }

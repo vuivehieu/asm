@@ -23,7 +23,14 @@
                 checkboxes[i].checked = selectAllCheckbox.checked;
             }
         }
-
+        function handleEdit(id){
+            window.location.href='/scan-edit?id='+id;
+        }
+        function handleDelete(id){
+            if(confirm("Are you sure want to delete?")) {
+                window.location.href = '/scan-delete?id=' + id;
+            }
+        }
         function sortTable(n) {
             var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
             table = document.getElementById("example");
@@ -140,7 +147,7 @@
                                                         class="nav-link"
                                                         id="pills-profile-tab"
                                                         data-toggle="pill"
-                                                        th:href="@{/scan/setting}"
+                                                        th:href="@{/scan-settings}"
                                                         role="tab"
                                                         aria-controls="pills-profile"
                                                         aria-selected="false"
@@ -181,7 +188,7 @@
                                         <th th:onclick="sortTable(3)" class="cursor-pointer">End Time</th>
                                         <th th:onclick="sortTable(4)" class="cursor-pointer">Schedule</th>
                                         <th th:onclick="sortTable(5)" class="cursor-pointer">Status</th>
-                                        <th></th>
+                                        <th>Action</th>
                                         <!--                                        <th></th>-->
                                     </tr>
                                     </thead>
@@ -196,6 +203,10 @@
                                             <td th:switch="${item.status}">
                                                 <span class="badge  badge-success" th:case='0' th:text="Completed"></span>
                                                 <span class="badge  badge-light" th:case='1' th:text="Inprogress"></span>
+                                            </td>
+                                            <td>
+                                                <button class="btn text-primary rounded-circle m-0 btn-sm btn-icon" style="height: 0px !important;" th:onclick="|handleEdit(${item.id})|"><i class="material-icons" >edit</i><div class="ripple-container"></div></button>
+                                                <button class="btn text-danger rounded-circle m-0 btn-sm btn-icon" style="height: 0px !important;" th:onclick="|handleDelete(${item.id})|"><i class="material-icons">delete</i></button>
                                             </td>
                                         </tr>
                                     </th:block>

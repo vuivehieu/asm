@@ -20,7 +20,7 @@
         <div th:if="${errorMessage != null}" style="color: red;">
           <p th:text="${errorMessage}"></p>
         </div>
-        <div th:if="${successMessage}" style="color: red;">
+        <div th:if="${successMessage}" style="color: lawngreen;">
           <p th:text="${successMessage}"></p>
         </div>
         <form action="#" th:action="@{/sign-in}" th:object="${login}" method="post" style="margin-bottom: 100px">

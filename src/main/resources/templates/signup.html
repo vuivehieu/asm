@@ -25,7 +25,8 @@
           <input type="text" class="form-control" required th:field="*{username}" placeholder="Username">
         </div>
         <div class="input-group  input-light mb-md">
-          <input type="password" class="form-control" required th:field="*{password}" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$" placeholder="Password">
+          <input type="password" style="width: 100%" class="form-control" required th:field="*{password}" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$" placeholder="Password">
+          <small>Must have a Capital, a Number, a Special Character and a normal character with the min length of 6</small><br><br>
         </div>
         <div class="input-group  input-light mb-md">
           <input type="password" class="form-control" required th:field="*{rePassword}" placeholder="Confirm Password">

@@ -1,6 +1,7 @@
 package com.example.asm.controller;
 
 import com.example.asm.dto.DomainDto;
+import com.example.asm.entity.DomainEntity;
 import com.example.asm.service.IDomainService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URLDecoder;
 import java.util.List;
@@ -20,11 +19,10 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Controller
-@RequestMapping(value = "/scan")
 public class ScanController {
     @Autowired
     IDomainService domainService;
-    @GetMapping
+    @GetMapping(value = "/scan")
     public String findAllDomain(Model model,
                                 @RequestParam("page") Optional<Integer> page,
                                 @RequestParam("size") Optional<Integer> size,
@@ -51,8 +49,24 @@ public class ScanController {
         model.addAttribute("searchField", searchField);
         return "allscan";
     }
-    @GetMapping(value = "/setting")
+    @GetMapping(value = "scan-settings")
     public String getSetting(){
         return "setting";
+    }
+
+    @GetMapping(value = "scan-edit")
+    public String showEditForm(@RequestParam("id") int id, Model model){
+        model.addAttribute("domain", this.domainService.findById(id));
+        return "edit-scan";
+    }
+    @PostMapping(value = "edit-scan")
+    public String showEditForm(@ModelAttribute DomainEntity domain){
+        this.domainService.updateDomain(domain);
+        return "redirect:/scan";
+    }
+    @GetMapping(value = "scan-delete")
+    public String deleteScan(@RequestParam("id") int id){
+        this.domainService.deleteDomain(id);
+        return "redirect:/scan";
     }
 }
