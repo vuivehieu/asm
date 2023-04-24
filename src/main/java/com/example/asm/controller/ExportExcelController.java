@@ -70,7 +70,7 @@ public class ExportExcelController {
         String currentDateTime = dateFormatter.format(new Date());
         List<CveDto> cveList = this.service.findAllByDomainId(id);
         String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=users_" + currentDateTime + ".xlsx";
+        String headerValue = "attachment; filename=cves_" + currentDateTime + ".xlsx";
         response.setHeader(headerKey, headerValue);
 
         ExportExcelCve excelExporter = new ExportExcelCve(cveList);
