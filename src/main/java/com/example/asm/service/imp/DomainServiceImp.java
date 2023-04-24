@@ -1,11 +1,13 @@
 package com.example.asm.service.imp;
 
 import com.example.asm.dto.DomainDto;
+import com.example.asm.dto.ResultHttpxDto;
 import com.example.asm.dto.SubdomainDto;
 import com.example.asm.dto.SubdomainIpDto;
 import com.example.asm.entity.SubdomainEntity;
 import com.example.asm.entity.SubdomainIpEntity;
 import com.example.asm.mapper.DomainMapper;
+import com.example.asm.mapper.ResultHttpxMapper;
 import com.example.asm.mapper.SubdomainIpMapper;
 import com.example.asm.mapper.SubdomainMapper;
 import com.example.asm.repository.*;
@@ -21,6 +23,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -45,6 +48,8 @@ public class DomainServiceImp implements IDomainService {
     DomainMapper mapper;
     @Autowired
     SubdomainMapper subdomainMapper;
+    @Autowired
+    ResultHttpxMapper resultHttpxMapper;
     @Override
     public Page<DomainDto> findAllPage(Pageable pageable) {
         return this.domainRepository.findAll(pageable).map(x->mapper.toDto(x));
@@ -58,11 +63,13 @@ public class DomainServiceImp implements IDomainService {
     @Override
     public void exportToExcel(Integer id, HttpServletResponse response){
         DomainDto domainDto = mapper.toDto(this.domainRepository.findById(id).orElseThrow());
+        List<SubdomainDto> subdomainDtoList = this.subdomainRepository.getAllByDomainId(id).stream().map(x -> subdomainMapper.toDto(x)).collect(Collectors.toList());
+        List<ResultHttpxDto> resultHttpxDtoList = this.resultHttpxRepository.getAllByDomainId(id).stream().map(x -> resultHttpxMapper.toDto(x)).collect(Collectors.toList());
         response.setContentType("application/octet-stream");
         String headerKey = "Content-Disposition";
         String headerValue = "attachment; filename=domain_" + id + ".xlsx";
         response.setHeader(headerKey, headerValue);
-        ExportExcelDomain exportExcelDomain = new ExportExcelDomain(domainDto);
+        ExportExcelDomain exportExcelDomain = new ExportExcelDomain(domainDto, subdomainDtoList, resultHttpxDtoList);
         try {
             exportExcelDomain.export(response);
         } catch (IOException e) {
@@ -75,7 +82,7 @@ public class DomainServiceImp implements IDomainService {
         try {
             cveRepository.deleteByDomainId(id);
             resultHttpxRepository.deleteByDomainId(id);
-            List<SubdomainDto> subdomainDtoList = subdomainRepository.getAllByDomainId(id).stream().map(x -> subdomainMapper.toDto(x)).toList();
+            List<SubdomainDto> subdomainDtoList = subdomainRepository.getAllByDomainId(id).stream().map(x -> subdomainMapper.toDto(x)).collect(Collectors.toList());
             for (SubdomainDto subdomainDto : subdomainDtoList) {
                 SubdomainIpEntity subdomainIpEntity = subdomainIpRepository.findBySubdomainId(subdomainDto.getId());
                 if (subdomainIpEntity != null){

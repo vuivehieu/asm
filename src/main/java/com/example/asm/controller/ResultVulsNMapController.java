@@ -39,7 +39,7 @@ public class ResultVulsNMapController {
             searchField = URLDecoder.decode(searchField);
             vulsNMapPage = this.service.searchPage(PageRequest.of(pageIndex-1,pageSize,Sort.by("id").descending()),searchField);
         }
-        model.addAttribute("cves", vulsNMapPage);
+        model.addAttribute("result", vulsNMapPage);
         int totalPage = vulsNMapPage.getTotalPages();
         if(totalPage>0){
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPage)
@@ -50,6 +50,6 @@ public class ResultVulsNMapController {
         }
         request.getSession().setAttribute("ref",request.getRequestURI());
         model.addAttribute("searchField", searchField);
-        return null;
+        return "result-vuls-nmap";
     }
 }
