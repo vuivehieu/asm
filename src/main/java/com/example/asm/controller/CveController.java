@@ -57,6 +57,34 @@ public class CveController {
         return "cve";
     }
 
+    @GetMapping(value = "/all")
+    public String findCveAll(Model model,
+                             @RequestParam("page") Optional<Integer> page,
+                             @RequestParam("size") Optional<Integer> size,
+                             @RequestParam("search") Optional<String> search,
+                             HttpServletRequest request){
+        int pageIndex = page.orElse(1);
+        int pageSize = size.orElse(5);
+        String searchField = search.orElse(null);
+        Page<CveDto> cvePage = this.service.findAllPage(PageRequest.of(pageIndex-1,pageSize, Sort.by("id").descending()));
+        if(searchField!=null){
+            searchField = URLDecoder.decode(searchField);
+            cvePage = this.service.searchPage(PageRequest.of(pageIndex-1,pageSize,Sort.by("id").descending()),searchField);
+        }
+        model.addAttribute("cves", cvePage);
+        int totalPage = cvePage.getTotalPages();
+        if(totalPage>0){
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPage)
+                    .boxed()
+                    .collect(Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+            model.addAttribute("curPage", pageIndex);
+        }
+        request.getSession().setAttribute("ref",request.getRequestURI());
+        model.addAttribute("searchField", searchField);
+        return "cveAll";
+    }
+
     @GetMapping("{id}")
     public String findAllCveByDomainId(Model model,
                              @PathVariable("id") int id,
