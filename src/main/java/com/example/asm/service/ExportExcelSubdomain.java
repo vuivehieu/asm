@@ -5,6 +5,7 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -26,7 +27,6 @@ public class ExportExcelSubdomain {
 
     private void writeHeaderLine() {
         sheet = workbook.createSheet("Subdomain");
-
         Row row = sheet.createRow(0);
 
         CellStyle style = workbook.createCellStyle();
@@ -61,6 +61,7 @@ public class ExportExcelSubdomain {
         XSSFFont font = workbook.createFont();
         font.setFontHeight(14);
         style.setFont(font);
+        style.setAlignment(HorizontalAlignment.LEFT);
 
         Row row = sheet.createRow(1);
         int columnCount = 0;

@@ -67,8 +67,8 @@ public class SubdomainServiceImp implements ISubdomainService {
         try {
             List<Integer> idList = new ArrayList<>();
             List<DomainEntity> lastTwoDomain = domainRepository.getLastTwoDomain();
-            List<SubdomainDto> lastScanDomain = repository.getAllByDomainId(lastTwoDomain.get(0).getId()).stream().map(x -> mapper.toDto(x)).toList();
-            List<SubdomainDto> beforeLastScanDomain = repository.getAllByDomainId(lastTwoDomain.get(1).getId()).stream().map(x -> mapper.toDto(x)).toList();
+            List<SubdomainDto> lastScanDomain = repository.getAllByDomainId(lastTwoDomain.get(0).getId()).stream().map(x -> mapper.toDto(x)).collect(Collectors.toList());
+            List<SubdomainDto> beforeLastScanDomain = repository.getAllByDomainId(lastTwoDomain.get(1).getId()).stream().map(x -> mapper.toDto(x)).collect(Collectors.toList());
             List<String> subdomainName = beforeLastScanDomain.stream().map(SubdomainDto::getSubdomainName).collect(Collectors.toList());
             if (lastScanDomain.size() != beforeLastScanDomain.size()){
                 idList = lastScanDomain.stream().map(SubdomainDto::getId).collect(Collectors.toList());
@@ -93,7 +93,7 @@ public class SubdomainServiceImp implements ISubdomainService {
         SubdomainDto subdomainDto = mapper.toDto(repository.findById(id).orElseThrow());
         SubdomainIpDto subdomainIpDto = subdomainIpMapper.toDto(subdomainIpRepository.findBySubdomainId(id));
         List<ResultNMapDto> resultNMapDtos = resultNMapRepository.getALlBySubdomainIp(subdomainIpDto.getId()).stream().map(x -> resultNMapMapper.toDto(x)).collect(Collectors.toList());
-        List<ResultHttpxDto> resultHttpxDtos = resultHttpxRepository.findByDomainId(subdomainDto.getDomain().getId(), subdomainIpDto.getIp()).stream().map(x -> resultHttpxMapper.toDto(x)).collect(Collectors.toList());
+        List<ResultHttpxDto> resultHttpxDtos = resultHttpxRepository.findByDomainIdAndSubdomainIp(subdomainDto.getDomain().getId(), subdomainIpDto.getIp()).stream().map(x -> resultHttpxMapper.toDto(x)).collect(Collectors.toList());
         List<ResultNucleiDto> resultNucleiDtos = resultNucleiRepository.findAllBySubdomainIpId(subdomainIpDto.getId()).stream().map(x -> resultNucleiMapper.toDto(x)).collect(Collectors.toList());
 
         Set<String> technical = new HashSet<>();
